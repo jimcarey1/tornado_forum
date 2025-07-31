@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tornado Forum</title>
+    </head>
+    <body>
+        {% if current_user %}
+        {{current_user.username}}
+        <a href="/auth/logout">
+            <button>Logout</button>
+        </a>
+        {% end %}
+    </body>
+</html>

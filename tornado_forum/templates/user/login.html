@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tornado Forum</title>
+    </head>
+    <body>
+        <h1>Login Form</h1>
+        <form method="post">
+            {% module xsrf_form_html() %}
+            <input type="text" name="username" placeholder="Username" required />
+            <input type="password" name="password" placeholder="********" required />
+            <button type="submit">Login</button>
+        </form>
+    </body>
+</html>

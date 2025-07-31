@@ -1,0 +1,48 @@
+import tornado
+import asyncio
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from pathlib import Path
+
+from handlers.user import UserLoginHandler, UserRegisterHandler, UserLogoutHandler
+from handlers.core import HomeHandler
+
+BASE_PATH = Path(__file__).parent
+
+class MyApplication(tornado.web.Application):
+    def __init__(self, asession):
+        self.asession = asession
+        handlers = [
+            (r'/', HomeHandler),
+            (r'/auth/login', UserLoginHandler),
+            (r'/auth/register', UserRegisterHandler),
+            (r'/auth/logout', UserLogoutHandler),
+        ]
+        settings = dict(
+            title = 'tornado forum',
+            xsrf_cookies = True,
+            debug = True,
+            cookie_secret = 'DANGER, YOU ARE BEING CONSTANTLY WATCHED.',
+            template_path = f'{BASE_PATH}/templates',
+            static_path = f'{BASE_PATH}/static',
+            login_url = '/auth/login',
+        )
+        super().__init__(handlers, **settings)
+
+
+async def main():
+    async_engine = create_async_engine('sqlite+aiosqlite:///forum.sqlite')
+
+    #we are using alembic to create and manage db migrations.
+    # async with async_engine.connect() as conn:
+    #     await conn.run_sync(Base.metadata.create_all)
+        
+    asession = async_sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession)
+    
+    app = MyApplication(asession)
+    app.listen(8888)
+
+    shutdown_event = tornado.locks.Event()
+    await shutdown_event.wait()
+    
+if __name__ == '__main__':
+    asyncio.run(main())
