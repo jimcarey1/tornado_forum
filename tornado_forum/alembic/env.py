@@ -9,6 +9,8 @@ from alembic import context
 
 
 from models.user import User
+from models.forum import Forum
+from models.post import Topic, Comment
 from models.base import Base
 
 # this is the Alembic Config object, which provides
