@@ -17,8 +17,8 @@ class Topic(Base):
     forum_id: Mapped[int] = mapped_column(ForeignKey('forums.id'))
     user_id: Mapped[int] = mapped_column(ForeignKey('accounts.id'))
 
-    forum: Mapped['Forum'] = relationship('Forum', back_populates='topics')
-    user: Mapped['User'] = relationship('User', back_populates='topics')
+    forum = relationship('Forum', back_populates='topics')
+    user = relationship('User', back_populates='topics')
 
     comments = relationship('Comment', back_populates='topic')
 
@@ -33,5 +33,5 @@ class Comment(Base):
     topic_id: Mapped[int] = mapped_column(ForeignKey('topics.id'))
     user_id: Mapped[int] = mapped_column(ForeignKey('accounts.id'))
 
-    topic: Mapped['Topic'] = relationship('Topic', back_populates='comments')
-    user: Mapped['User'] = relationship('User', back_populates='comments')
+    topic  = relationship('Topic', back_populates='comments')
+    user = relationship('User', back_populates='comments')

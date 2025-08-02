@@ -3,6 +3,7 @@ from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy.sql import func
 from .base import Base
 
+
 class User(Base):
     __tablename__ = 'accounts'
 
@@ -13,8 +14,8 @@ class User(Base):
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     is_staff: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    topics = relationship('Topic', back_populates='user')
-    comments = relationship('Comment', back_populates='user')
+    # topics = relationship('Topic', back_populates='user')
+    # comments = relationship('Comment', back_populates='user')
 
     def __repr__(self):
         return f'User(id: {self.id}, username: {self.username})'

@@ -53,10 +53,12 @@ class UserLoginHandler(BaseHandler):
         password = self.get_argument('password')
         async with self.application.asession() as sess:
             query = select(User.id, User.password).where(User.username == username)
-            print(query.compile(compile_kwargs={'literal_binds':True}))
+            # print(query.compile(compile_kwargs={'literal_binds':True}))
             try:
-                result = await sess.scalar_one(query)
-            except Exception:
+                result = (await sess.execute(query)).one_or_none()
+                print(result)
+            except Exception as e:
+                print(f'got exception: {e}')
                 pass
         password_check = await tornado.ioloop.IOLoop.current().run_in_executor(
             None,
@@ -70,6 +72,7 @@ class UserLoginHandler(BaseHandler):
         self.redirect('/auth/login')
 
 class UserLogoutHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.clear_cookie('app_cookie')
         self.redirect('/auth/login')
