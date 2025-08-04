@@ -1,4 +1,4 @@
-from sqlalchemy import String, ForeignKey, DateTime
+from sqlalchemy import String, ForeignKey, DateTime, Text
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy.sql import func
 
@@ -10,7 +10,8 @@ class Forum(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), unique=True)
-    parent_id: Mapped[int] = mapped_column(ForeignKey('forums.id'))
+    description = mapped_column(Text)
+    parent_id: Mapped[int] = mapped_column(ForeignKey('forums.id'), nullable=True)
     children = relationship('Forum', back_populates='parent')
     parent = relationship('Forum', back_populates='children', remote_side=[id])
     created_on = mapped_column(DateTime(timezone=True), server_default=func.now())
