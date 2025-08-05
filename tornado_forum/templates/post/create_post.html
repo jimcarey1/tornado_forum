@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tornado Forum</title>
+    </head>
+    <body>
+        <h1>Create Post</h1>
+        <form method="post">
+            {% module xsrf_form_html() %}
+            <input type="hidden" name="forum_id" value="{{forum_id}}" />
+            <input type="text" name="title" placeholder="Post Title..." required />
+            <textarea name="content" placeholder="Content..." required></textarea>
+            <button type="submit">Create Post</button>
+        </form>
+    </body>
+</html>

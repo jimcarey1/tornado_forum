@@ -6,6 +6,7 @@ from pathlib import Path
 from handlers.user import UserLoginHandler, UserRegisterHandler, UserLogoutHandler
 from handlers.core import HomeHandler
 from handlers.forum import CreateForumHandler, ViewForumHandler
+from handlers.post import CreateTopicHandler, ViewTopicHanlder
 
 BASE_PATH = Path(__file__).parent
 
@@ -18,7 +19,9 @@ class MyApplication(tornado.web.Application):
             (r'/auth/register', UserRegisterHandler),
             (r'/auth/logout', UserLogoutHandler),
             (r'/forum/create', CreateForumHandler),
-            (r'/forum/(\d+)', ViewForumHandler)
+            (r'/forum/(\d+)', ViewForumHandler),
+            (r'/topic/create/(\d+)', CreateTopicHandler),
+            (r'/topic/(\d+)', ViewTopicHanlder),
         ]
         settings = dict(
             title = 'tornado forum',

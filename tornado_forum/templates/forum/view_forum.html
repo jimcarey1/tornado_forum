@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<htm>
+<html>
     <head>
         <title>Tornado Forum</title>
     </head>
@@ -7,5 +7,8 @@
         {{forum.name}}
         {{forum.description}}
         {{forum.created_on}}
+        <a href="/topic/create/{{forum.id}}">
+            <button>Create Post</button>
+        </a>
     </body>
-</htm>
+</html>

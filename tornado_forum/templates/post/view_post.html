@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Topic Forum</title>
+        <script src='https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js'></script>
+    </head>
+    <body>
+        {{topic.title}}
+        {{topic.content}}
+        {{topic.created_on}}
+        {{topic.forum_id}}
+        {{topic.user_id}}
+        <div id='thread-reply'>
+            <div id='editor'></div>
+            <button type='submit'>Reply</button>
+        </div>
+        <script src="{{ static_url('js/commentCKEditor.js') }}"></script>
+    </body>
+</html>
