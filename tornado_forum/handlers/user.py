@@ -18,10 +18,10 @@ class UserRegisterHandler(BaseHandler):
         username = self.get_argument('username')
         email = self.get_argument('email')
         password = self.get_argument('password')
-        async with self.application.asession() as asess:
+        async with self.application.asession() as sess:
             query = select(User).where(or_(User.username == username, User.email == email))
             print(query.compile(compile_kwargs={'literal_binds':True}))
-            result = (await asess.execute(query)).first()
+            result = sess.scalar_one_or_none(query)
         if result is not None:
             #A user with username or email already exist.
             self.render('user/register.html')
@@ -53,9 +53,9 @@ class UserLoginHandler(BaseHandler):
         password = self.get_argument('password')
         async with self.application.asession() as sess:
             query = select(User.id, User.password).where(User.username == username)
-            # print(query.compile(compile_kwargs={'literal_binds':True}))
+            print(query.compile(compile_kwargs={'literal_binds':True}))
             try:
-                result = (await sess.execute(query)).one_or_none()
+                result = sess.scalar_one_or_none(query)
                 print(result)
             except Exception as e:
                 print(f'got exception: {e}')

@@ -7,6 +7,10 @@
         {{forum.name}}
         {{forum.description}}
         {{forum.created_on}}
+        {% for child in forum.children %}
+            {{child.name}}
+            {{child.description}}
+        {% end %}
         <a href="/topic/create/{{forum.id}}">
             <button>Create Post</button>
         </a>

@@ -36,7 +36,7 @@ class MyApplication(tornado.web.Application):
 
 
 async def main():
-    async_engine = create_async_engine('sqlite+aiosqlite:///forum.sqlite')
+    async_engine = create_async_engine('sqlite+aiosqlite:///forum.sqlite', echo=True)
 
     #we are using alembic to create and manage db migrations.
     # async with async_engine.connect() as conn:

@@ -1,6 +1,7 @@
 from sqlalchemy import String, Boolean, DateTime
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy.sql import func
+from typing import List, Optional
 from .base import Base
 
 

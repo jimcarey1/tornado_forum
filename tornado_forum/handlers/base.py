@@ -11,6 +11,7 @@ class BaseHandler(RequestHandler):
             user_id = tornado.escape.to_unicode(user_id)
             async with self.application.asession() as sess:
                 query = select(User.id, User.email, User.is_admin, User.username).where(User.id==int(user_id))
-                print(query.compile(compile_kwargs={'literal_binds':True}))
-                user = (await sess.execute(query)).one_or_none()
+                # print(query.compile(compile_kwargs={'literal_binds':True}))
+                results = await sess.execute(query)
+                user = results.one_or_none()
                 self.current_user = user

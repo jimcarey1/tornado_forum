@@ -27,5 +27,5 @@ class ViewTopicHanlder(BaseHandler):
     async def get(self, topic_id):
         async with self.application.asession() as sess:
             stmt = select(Topic).where(Topic.id == topic_id)
-            topic = (await sess.execute(stmt)).scalar()
+            topic = sess.scalar(stmt)
         self.render('post/view_post.html', topic=topic)

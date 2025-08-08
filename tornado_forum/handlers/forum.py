@@ -1,5 +1,6 @@
 import tornado
 from sqlalchemy import insert, select
+from sqlalchemy.orm import selectinload
 
 from .base import BaseHandler
 from utils.permissions import is_admin
@@ -29,9 +30,13 @@ class CreateForumHandler(BaseHandler):
 
 class ViewForumHandler(BaseHandler):
     async def get(self, forum_id):
-        print(f'The forum id {forum_id}')
-        stmt = select(Forum).where(Forum.id == forum_id)
-        print(stmt.compile(compile_kwargs={'literal_binds':True}))
+        stmt = select(Forum).where(Forum.id == int(forum_id)).options(selectinload(Forum.children))
+        # print(stmt.compile(compile_kwargs={'literal_binds':True}))
         async with self.application.asession() as sess:
-            forum = (await sess.execute(stmt)).one_or_none()
-        self.render('forum/view_forum.html', forum=forum[0])
+            results = await sess.execute(stmt)
+            forum = results.scalar_one_or_none()
+            print('children loaded ?', hasattr(forum, 'children'))
+            if forum.children:
+                print(forum.children)
+            #print(await forum.awaitable_attrs.children)
+        self.render('forum/view_forum.html', forum=forum)
