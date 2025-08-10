@@ -4,11 +4,23 @@
         <title>Tornado Forum</title>
     </head>
     <body>
-        {% if current_user %}
-        {{current_user.username}}
-        <a href="/auth/logout">
-            <button>Logout</button>
-        </a>
-        {% end %}
+        <div class='container'>
+            {% for forum in forums %}
+            <div>
+                <div class='parent' id={{forum.id}}>
+                    <a href="/forum/{{forum.id}}">
+                        <h2>{{forum.name}}</h1>
+                    </a>
+                </div>
+                {% for subforum in forum.children %}
+                    <div class='subforum' id={{subforum.id}}>
+                        <a href="/forum/{{forum.id}}">
+                            <h4>{{subforum.name}}</h4>
+                        </a>
+                    </div>
+                {% end %}
+            </div>
+            {% end %}
+        </div>
     </body>
 </html>

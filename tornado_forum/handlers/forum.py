@@ -35,8 +35,4 @@ class ViewForumHandler(BaseHandler):
         async with self.application.asession() as sess:
             results = await sess.execute(stmt)
             forum = results.scalar_one_or_none()
-            print('children loaded ?', hasattr(forum, 'children'))
-            if forum.children:
-                print(forum.children)
-            #print(await forum.awaitable_attrs.children)
         self.render('forum/view_forum.html', forum=forum)

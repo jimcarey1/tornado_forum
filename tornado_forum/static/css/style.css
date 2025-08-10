@@ -3,3 +3,14 @@
     padding: 0px;
     box-sizing: border-box;
 }
+
+.container{
+    height: 100vh;
+    background-color: lightgray;
+}
+
+.parent{
+    font-size: large;
+    font-weight: bold;
+    background-color: tan;
+}
