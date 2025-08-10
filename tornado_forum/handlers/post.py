@@ -18,14 +18,17 @@ class CreateTopicHandler(BaseHandler):
         user_id = self.current_user.id
         async with self.application.asession() as sess:
             stmt = insert(Topic).values(title=title, content=content, forum_id=forum_id, user_id=user_id)
+            print(stmt.compile(compile_kwargs={'literal_binds': True}))
             post = await sess.execute(stmt)
             await sess.commit()
-            print(post.inserted_primary_key)
-        self.redirect(f'/topic/{post.inserted_primary_key[0]}')
+        post_id = post.inserted_primary_key[0]
+        self.redirect(f'/topic/{post_id}')
 
 class ViewTopicHanlder(BaseHandler):
     async def get(self, topic_id):
         async with self.application.asession() as sess:
             stmt = select(Topic).where(Topic.id == topic_id)
-            topic = sess.scalar(stmt)
+            topic = await sess.execute(stmt)
+            topic = topic.scalar_one_or_none()
+            print(topic)
         self.render('post/view_post.html', topic=topic)

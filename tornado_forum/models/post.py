@@ -21,6 +21,9 @@ class Topic(Base):
 
     comments = relationship('Comment', back_populates='topic')
 
+    def __repr__(self):
+        return f"<Topic(id={self.id}, title='{self.title}'>"
+
 
 class Comment(Base):
     __tablename__ = 'comments'
@@ -38,3 +41,6 @@ class Comment(Base):
 
     topic  = relationship('Topic', back_populates='comments')
     user = relationship('User', back_populates='comments')
+
+    def __repr__(self):
+        return f"<Comment(id={self.id}, content='{self.content[:20]}...')>"

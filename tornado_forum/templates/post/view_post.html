@@ -5,11 +5,8 @@
         <script src='https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js'></script>
     </head>
     <body>
-        {{topic.title}}
-        {{topic.content}}
-        {{topic.created_on}}
-        {{topic.forum_id}}
-        {{topic.user_id}}
+        <h4>{{topic.title}}</h4>
+        <p>{{topic.content}}</p>
         <div id='thread-reply'>
             <div id='editor'></div>
             <button type='submit'>Reply</button>
