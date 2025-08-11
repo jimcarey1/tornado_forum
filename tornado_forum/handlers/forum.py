@@ -8,6 +8,8 @@ from utils.permissions import is_admin
 from models.forum import Forum
 from models.post import Topic
 
+from .services import get_forum_topics, is_root_forum
+
 class CreateForumHandler(BaseHandler):
     @tornado.web.authenticated
     @is_admin
@@ -35,4 +37,6 @@ class ViewForumHandler(BaseHandler):
         async with self.application.asession() as sess:
             results = await sess.execute(stmt)
             forum = results.scalar_one_or_none()
-        self.render('forum/view_forum.html', forum=forum)
+            topics = await get_forum_topics(sess, int(forum_id)) 
+            print(topics)
+        self.render('forum/view_forum.html', forum=forum, topics=topics)

@@ -46,16 +46,18 @@ class UserLoginHandler(BaseHandler):
         '''
         If the user already logged in, redirect him to the homepage.
         '''
+        self.set_header('Cache-Control', 'no-cache, no-store, must-revalidate')
         self.render('user/login.html')
 
     async def post(self):
         username = self.get_argument('username')
         password = self.get_argument('password')
         async with self.application.asession() as sess:
-            query = select(User.id, User.password).where(User.username == username)
+            query = select(User).where(User.username == username)
             print(query.compile(compile_kwargs={'literal_binds':True}))
             try:
-                result = sess.scalar_one_or_none(query)
+                result = await sess.scalars(query)
+                result = result.one_or_none()
                 print(result)
             except Exception as e:
                 print(f'got exception: {e}')
@@ -69,6 +71,7 @@ class UserLoginHandler(BaseHandler):
         if password_check:
             self.set_signed_cookie('app_cookie', str(result.id))
             self.redirect('/')
+        self.set_header('Cache-Control', 'no-cache, no-store, must-revalidate')
         self.redirect('/auth/login')
 
 class UserLogoutHandler(BaseHandler):

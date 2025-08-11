@@ -4,6 +4,8 @@ from sqlalchemy.orm import selectinload
 from .base import BaseHandler
 from models.forum import Forum
 
+from handlers.services import is_root_forum, get_forum_topics
+
 class HomeHandler(BaseHandler):
     async def get(self):
         query = select(Forum).where(Forum.parent == None).options(selectinload(Forum.children))
