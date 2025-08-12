@@ -16,5 +16,8 @@
         <a href="/topic/create/{{forum.id}}">
             <button>Create Post</button>
         </a>
+        {% for topic in topics %}
+            <p>{{topic.title}}</p>
+        {% end %}
     </body>
 </html>

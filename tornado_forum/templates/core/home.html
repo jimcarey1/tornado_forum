@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Tornado Forum</title>
+        <link rel="stylesheet" href="{{ static_url('css/style.css') }}">
     </head>
     <body>
         <div class='container'>
@@ -11,13 +12,17 @@
                     <a href="/forum/{{forum.id}}">
                         <h2>{{forum.name}}</h1>
                     </a>
+                    <p>Total Topics</p>
+                    <p>Last Post</p>
                 </div>
                 {% for subforum in forum.children %}
-                    <div class='subforum' id={{subforum.id}}>
-                        <a href="/forum/{{forum.id}}">
-                            <h4>{{subforum.name}}</h4>
-                        </a>
-                    </div>
+                <div class='subforum' id={{subforum.id}}>
+                    <a href="/forum/{{forum.id}}">
+                        <h4>{{subforum.name}}</h4>
+                    </a>
+                    <p>567</p>
+                    <p>One hour ago</p>
+                </div>
                 {% end %}
             </div>
             {% end %}
