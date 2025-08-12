@@ -1,31 +1,41 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Tornado Forum</title>
+        <title>{% block title %}Tornado Forum{% end %}</title>
         <link rel="stylesheet" href="{{ static_url('css/style.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/navbar.css') }}">
+        {% block style %}{% end %}
     </head>
     <body>
-        <div class='container'>
+        <div class='main-page'>
+            {% include 'components/navbar.html' %}
+            <div class="forum-index">
             {% for forum in forums %}
-            <div>
-                <div class='parent' id={{forum.id}}>
-                    <a href="/forum/{{forum.id}}">
-                        <h2>{{forum.name}}</h1>
-                    </a>
-                    <p>Total Topics</p>
-                    <p>Last Post</p>
+                <div class="forum-category">
+                    <div class='parent' id={{forum.id}}>
+                        <div class="forum-title">
+                            <a href="/forum/{{forum.id}}">
+                                <h2>{{forum.name}}</h2>
+                            </a>
+                        </div>
+                        <p>Total Topics</p>
+                        <p>Last Post</p>
+                    </div>
+                    {% for subforum in forum.children %}
+                    <div class='subforum' id={{subforum.id}}>
+                        <div class="forum-title">
+                            <a href="/forum/{{forum.id}}">
+                                <h4>{{subforum.name}}</h4>
+                            </a>
+                            <p>{{subforum.description}}</p>
+                        </div>
+                        <p>567</p>
+                        <p>One hour ago</p>
+                    </div>
+                    {% end %}
                 </div>
-                {% for subforum in forum.children %}
-                <div class='subforum' id={{subforum.id}}>
-                    <a href="/forum/{{forum.id}}">
-                        <h4>{{subforum.name}}</h4>
-                    </a>
-                    <p>567</p>
-                    <p>One hour ago</p>
-                </div>
-                {% end %}
-            </div>
             {% end %}
+            </div>
         </div>
     </body>
 </html>

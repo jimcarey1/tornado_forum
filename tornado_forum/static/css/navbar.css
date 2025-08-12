@@ -1,0 +1,21 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: darkgray;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.auth-related{
+    display: flex;
+    gap: 10px;
+}
+
+.navbar .auth-related button{
+    background-color: black;
+    color: white;
+    padding: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
