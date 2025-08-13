@@ -1,7 +1,12 @@
-body{
+*{
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
+    text-decoration-color: white;
+}
+
+a{
+    color: white;
 }
 
 .main-page{
@@ -15,23 +20,33 @@ body{
 .forum-index{
     display: flex;
     flex-direction: column;
+    padding: 15px 30px 0px 30px;
 }
 
 .forum-category{
     display: flex;
     flex-direction: column;
+    padding: 10px;
     margin-bottom: 20px;
+    border: 2px solid white;
 }
 
 .parent, .subforum{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 50px;
 }
 
-.forum-title{
+.parent{
+    margin-bottom: 10px;
+}
+
+.subforum{
+    margin-bottom: 7px;
+}
+
+.subforum .forum-title{
     display: flex;
     flex-direction: column;
-    
+    gap: 0px;
 }

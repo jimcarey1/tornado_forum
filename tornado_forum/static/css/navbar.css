@@ -3,8 +3,7 @@
     justify-content: space-between;
     align-items: center;
     background-color: darkgray;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding: 15px 30px;
 }
 
 .auth-related{
