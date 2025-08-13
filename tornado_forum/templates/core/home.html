@@ -2,42 +2,21 @@
 <html>
     <head>
         <title>{% block title %}Tornado Forum{% end %}</title>
-        <link rel="stylesheet" href="{{ static_url('css/style.css') }}">
         <link rel="stylesheet" href="{{ static_url('css/navbar.css') }}">
-        {% block style %}{% end %}
+        {% block style %}
+        <link rel="stylesheet" href="{{ static_url('css/style.css') }}">
+        {% end %}
     </head>
     <body>
         <div class='main-page'>
             {% include 'components/navbar.html' %}
+            {% block content %}
             <div class="forum-index">
             {% for forum in forums %}
-                <div class="forum-category">
-                    <div class='parent' id={{forum.id}}>
-                        <div>
-                            <a href="/forum/{{forum.id}}">
-                                <h2>{{forum.name}}</h2>
-                            </a>
-                        </div>
-                        <p>Total Topics</p>
-                        <p>Last Post</p>
-                    </div>
-                    {% for subforum in forum.children %}
-                    <div class='subforum' id={{subforum.id}}>
-                        <div class="forum-title">
-                            <a href="/forum/{{forum.id}}">
-                                <h4>{{subforum.name}}</h4>
-                            </a>
-                            <div>
-                                <p>{{subforum.description}}</p>
-                            </div>
-                        </div>
-                        <p>567</p>
-                        <p>One hour ago</p>
-                    </div>
-                    {% end %}
-                </div>
+                {% include 'components/forum_category.html' %}
             {% end %}
             </div>
+            {% end %}
         </div>
     </body>
 </html>

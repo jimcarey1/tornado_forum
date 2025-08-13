@@ -1,0 +1,25 @@
+<div class="forum-category">
+    <div class='parent' id={{forum.id}}>
+        <div>
+            <a href="/forum/{{forum.id}}">
+                <h2>{{forum.name}}</h2>
+            </a>
+        </div>
+        <p>Total Topics</p>
+        <p>Last Post</p>
+    </div>
+    {% for subforum in forum.children %}
+    <div class='subforum' id={{subforum.id}}>
+        <div class="forum-title">
+            <a href="/forum/{{forum.id}}">
+                <h4>{{subforum.name}}</h4>
+            </a>
+            <div>
+                <p>{{subforum.description}}</p>
+            </div>
+        </div>
+        <p>567</p>
+        <p>One hour ago</p>
+    </div>
+    {% end %}
+</div>
