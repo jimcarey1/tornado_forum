@@ -1,11 +1,24 @@
 {% extends "core/home.html" %}
+
 {% block title %}
-<link rel="stylesheet" href="{{ static_url('css/view_forum.css') }}"
+{{forum.name}}
+{% end %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ static_url('css/view_forum.css') }}">
 {% end %}
 
 {% block content %}
 {% include 'components/forum_category.html' %}
+<div class="recent-forum-posts">
 {% for topic in topics %}
-    <p>{{topic.title}}</p>
+<div class="topic" id='{{topic.id}}'>
+    <span class="title">{{topic.title}}</span>
+    <div class="created-info">
+        <span class="created-by">{{topic.user.username}}</span>
+        <span class="create-date">{{topic.created_on}}</span>
+    </div>
+</div>
 {% end %}
+</div>
 {% end %}

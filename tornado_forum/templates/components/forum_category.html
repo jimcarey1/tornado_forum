@@ -11,7 +11,7 @@
     {% for subforum in forum.children %}
     <div class='subforum' id={{subforum.id}}>
         <div class="forum-title">
-            <a href="/forum/{{forum.id}}">
+            <a href="/forum/{{subforum.id}}">
                 <h4>{{subforum.name}}</h4>
             </a>
             <div>

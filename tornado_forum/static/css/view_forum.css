@@ -1,0 +1,24 @@
+.recent-forum-posts{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.topic{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0px 20px;
+    border: 1px solid white;
+    flex: 1;
+}
+
+.topic .title{
+    flex: 3;
+}
+
+.topic .created-info{
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+}
