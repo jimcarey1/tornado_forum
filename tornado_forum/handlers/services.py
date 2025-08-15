@@ -18,7 +18,7 @@ async def get_forum_topics(sess, forum_id:int):
         child_ids_subq = select(Forum.id).where(Forum.parent_id == forum_id).subquery()
         stmt = select(Topic).options(selectinload(Topic.forum), selectinload(Topic.user)).where(Topic.forum_id.in_(select(child_ids_subq.c.id))) \
                                                                 .order_by(Topic.created_on.desc()).limit(5)
-        print(stmt.compile(compile_kwargs={'literal_binds':True}))
+        # print(stmt.compile(compile_kwargs={'literal_binds':True}))
     else:
         stmt = select(Topic).options(selectinload(Topic.user)).where(Topic.forum_id == forum_id)
     topics = await sess.scalars(stmt)

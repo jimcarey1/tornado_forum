@@ -2,15 +2,57 @@
 <html>
     <head>
         <title>Tornado Forum</title>
+        <script src='https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js'></script>
     </head>
     <body>
         <h1>Create Post</h1>
-        <form method="post">
+        <form method="POST">
             {% module xsrf_form_html() %}
             <input type="hidden" name="forum_id" value="{{forum_id}}" />
-            <input type="text" name="title" placeholder="Post Title..." required />
-            <textarea name="content" placeholder="Content..." required></textarea>
-            <button type="submit">Create Post</button>
+            <input type="text" id="title" name="title" placeholder="Post Title..." required />
+            <div id="editor">
+            </div>
+            <button id="post-create">Create Post</button>
         </form>
     </body>
+    <script src="{{static_url('js/utils.js')}}"></script>
+    <script>
+        let editor;
+        window.onload = ()=>{
+            ClassicEditor.create(document.querySelector('#editor'))
+            .then(newEditor=>{
+                editor = newEditor;
+                console.log(editor.getData())
+            })
+            .catch(error=>console.log(error))
+        }
+
+        const createButton = document.querySelector('#post-create')
+
+        createButton.addEventListener('click', (e)=>{
+            e.preventDefault()
+            const title = document.querySelector('#title').value
+            const content = editor.getData() 
+            
+            fetch(window.location.href, {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json',
+                    'X-Xsrftoken': getCookie('_xsrf'),
+                },
+                body: JSON.stringify({
+                    'title': title,
+                    'content': content,
+                })
+            }).then((response)=>{
+                if(response.ok){
+                    return response.json()
+                }
+            })
+            .then((data)=>{
+                console.log(data)
+                window.location.replace(`/topic/${data.postId}`)
+            })
+        })
+    </script>
 </html>

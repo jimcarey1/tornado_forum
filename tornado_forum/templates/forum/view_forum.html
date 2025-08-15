@@ -13,7 +13,11 @@
 <div class="recent-forum-posts">
 {% for topic in topics %}
 <div class="topic" id='{{topic.id}}'>
-    <span class="title">{{topic.title}}</span>
+    <span class="title">
+        <a href="/topic/{{topic.id}}">
+            {{topic.title}}
+        </a>
+    </span>
     <div class="created-info">
         <span class="created-by">{{topic.user.username}}</span>
         <span class="create-date">{{topic.created_on}}</span>
