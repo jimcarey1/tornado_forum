@@ -1,16 +1,26 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Topic Forum</title>
-        <script src='https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js'></script>
-    </head>
-    <body>
-        <h4>{{topic.title}}</h4>
-        <p>{{topic.content}}</p>
+{% extends 'core/home.html' %}
+{% block title %}
+    Tornado Forum
+{% end %}
+{% block style %}
+    <script src='https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js'></script>
+    <link rel="stylesheet" href="{{ static_url('css/view_post.css') }}">
+{% end %}
+{% block content %}
+    <div class="topic-page" id="{{ topic.id }}">
+        <div class="topic-details">
+            <h2>{{topic.title}}</h2>
+            <p>{{topic.content}}</p>
+        </div>
         <div id='thread-reply'>
             <div id='editor'></div>
             <button type='submit'>Reply</button>
         </div>
-        <script src="{{ static_url('js/commentCKEditor.js') }}"></script>
-    </body>
-</html>
+        <div class="comments-section">
+        </div>
+    </div>
+{% end %}
+
+{% block javascript %}
+    <script src="{{ static_url('js/commentCKEditor.js') }}"></script>
+{% end %}

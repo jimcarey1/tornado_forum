@@ -1,0 +1,18 @@
+.topic-page{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+#thread-reply{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#thread-reply > button{
+    align-self: end;
+    margin-right: 200px;
+    padding: 5px;
+}
