@@ -19,14 +19,12 @@ class CreateTopicHandler(BaseHandler):
         user_id = self.current_user.id
         async with self.application.asession() as sess:
             stmt = insert(Topic).values(title=title, content=content, forum_id=int(forum_id), user_id=user_id)
-            print(stmt.compile(compile_kwargs={'literal_binds': True}))
+            # print(stmt.compile(compile_kwargs={'literal_binds': True}))
             post = await sess.execute(stmt)
             await sess.commit()
         post_id = post.inserted_primary_key[0]
-        data = {"postId": post_id, "status": "ok"}
-        json_string = json.dumps(data)
         self.set_header('Content-Type', 'application/json')
-        self.write(json_string)
+        self.write({"postId": post_id, "status": "ok"})
 
 class ViewTopicHanlder(BaseHandler):
     async def get(self, topic_id):

@@ -45,14 +45,16 @@
                     'content': content,
                 })
             }).then((response)=>{
-                if(response.ok){
-                    return response.json()
+                if(!response.ok){
+                    throw new Error(`HTTP Error: ${response.status}`)
                 }
+                return response.json()
             })
             .then((data)=>{
-                console.log(data)
+                console.log('Server returned:', data)
                 window.location.replace(`/topic/${data.postId}`)
             })
+            .catch((error)=>console.log(`Fetch failed: ${error}`))
         })
     </script>
 </html>
