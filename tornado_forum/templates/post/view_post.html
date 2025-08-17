@@ -21,11 +21,11 @@
             </div>
             <i class="fa-solid fa-reply"></i>
         </div>
-        <div id='thread-reply' style="display: none;">
+        <div id='thread-reply' data-url="/topic/{{topic.id}}/comment/create" style="display: none;">
             <div id='editor'></div>
             <div class="handle-comment">
-                <button value="Reply" type="button">Reply</button>
-                <button value="Cancel" type="button">Cancel</button>
+                <button value="Reply" class="reply-comment" type="button">Reply</button>
+                <button value="Cancel" class="cancel-comment" type="button">Cancel</button>
             </div>
         </div>
         <div class="comments-section">
@@ -34,5 +34,6 @@
 {% end %}
 
 {% block javascript %}
+    <script src="{{ static_url('js/utils.js') }}"></script>
     <script src="{{ static_url('js/createComment.js') }}"></script>
 {% end %}
