@@ -11,3 +11,12 @@ def is_admin(
             raise HTTPError(403)
         return method(self, *args, **kwargs)
     return wrapper
+
+def is_owner_or_admin(
+        method: Callable[..., Optional[Awaitable[None]]]
+)->Callable[..., Optional[Awaitable[None]]]:
+    @functools.wraps(method)
+    def wrapper(self:RequestHandler, *args, **kwargs):
+        #do something here
+        return method(self, *args, **kwargs)
+    return wrapper

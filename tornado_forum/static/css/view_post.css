@@ -5,14 +5,42 @@
     margin-top: 30px;
 }
 
+.topic-meta{
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    font-size: 20px;
+}
+
+.topic-meta .topic-votes{
+    display: flex;
+    gap: 15px;
+}
+
 #thread-reply{
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-#thread-reply > button{
-    align-self: end;
-    margin-right: 200px;
-    padding: 5px;
+#thread-reply .handle-comment{
+    display: flex;
+    justify-content: end;
+    margin-top: 20px;
+    margin-right: 150px;
+    gap: 30px;
+}
+
+.handle-comment > button{
+    padding: 4px 8px;
+    border: none;
+    border-radius: 5px;
+}
+
+.handle-comment > button[value="Reply"]{
+    background-color: green;
+}
+
+.handle-comment > button[value="Cancel"]{
+    background-color: red;
 }

@@ -4,8 +4,6 @@ from sqlalchemy import insert
 from .base import BaseHandler
 from models.post import Comment
 
-
-
 class CreateCommentHandler(BaseHandler):
     @tornado.web.authenticated
     async def post(self, topic_id):
@@ -18,3 +16,13 @@ class CreateCommentHandler(BaseHandler):
             comment_primary_key = await sess.execute(stmt)
             await sess.commit()
         self.redirect(f'/topic/{topic_id}')
+
+class DeleteCommentHandler(BaseHandler):
+    @tornado.web.authenticated
+    async def post(self, comment_id):
+        pass
+
+class CommentVoteHandler(BaseHandler):
+    @tornado.web.authenticated
+    async def post(self, comment_id):
+        pass

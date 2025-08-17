@@ -34,3 +34,12 @@ class ViewTopicHanlder(BaseHandler):
             topic = topic.scalar_one_or_none()
             print(topic)
         self.render('post/view_post.html', topic=topic)
+
+class DeleteTopicHandler(BaseHandler):
+    async def post(self, topic_id):
+        pass
+
+class TopicVoteHandler(BaseHandler):
+    @tornado.web.authenticated
+    async def get(self, topic_id):
+        pass

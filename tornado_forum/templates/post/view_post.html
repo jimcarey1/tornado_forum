@@ -1,9 +1,11 @@
+
 {% extends 'core/home.html' %}
 {% block title %}
     Tornado Forum
 {% end %}
 {% block style %}
     <script src='https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js'></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ static_url('css/view_post.css') }}">
 {% end %}
 {% block content %}
@@ -12,9 +14,19 @@
             <h2>{{topic.title}}</h2>
             <p>{{topic.content}}</p>
         </div>
-        <div id='thread-reply'>
+        <div class="topic-meta">
+            <div class="topic-votes">
+                <i class="fa-solid fa-arrow-up"></i>
+                <i class="fa-solid fa-arrow-down"></i>
+            </div>
+            <i class="fa-solid fa-reply"></i>
+        </div>
+        <div id='thread-reply' style="display: none;">
             <div id='editor'></div>
-            <button type='submit'>Reply</button>
+            <div class="handle-comment">
+                <button value="Reply" type="button">Reply</button>
+                <button value="Cancel" type="button">Cancel</button>
+            </div>
         </div>
         <div class="comments-section">
         </div>
@@ -22,5 +34,5 @@
 {% end %}
 
 {% block javascript %}
-    <script src="{{ static_url('js/commentCKEditor.js') }}"></script>
+    <script src="{{ static_url('js/createComment.js') }}"></script>
 {% end %}

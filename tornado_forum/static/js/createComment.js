@@ -1,11 +1,21 @@
-const threadReplyElement = document.querySelector('button[type="submit"]');
-console.log(threadReplyElement);
+const replyIcon = document.querySelector('.fa-reply');
+const threadReplyContainer = document.querySelector('#thread-reply');
+let editorInstance = null;
 
-function renderCKEditor(){
+function toggleReplyEditor() {
+  const isHidden = threadReplyContainer.style.display === 'none';
+  threadReplyContainer.style.display = isHidden ? 'block' : 'none';
+
+  if (isHidden && !editorInstance) {
     ClassicEditor
-        .create(document.querySelector('#editor'))
-        .catch(error=>{
-            console.log(error)
-        })
+      .create(document.querySelector('#editor'))
+      .then(editor => {
+        editorInstance = editor;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
 }
-threadReplyElement.onclick = renderCKEditor;
+
+replyIcon.onclick = toggleReplyEditor;
