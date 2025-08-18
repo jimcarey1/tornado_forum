@@ -29,6 +29,7 @@
             </div>
         </div>
         <div class="comments-section">
+            <h4>Comments:</h4>
             {% for comment in topic.comments %}
             {% module Comment(comment) %}
             {% end %}

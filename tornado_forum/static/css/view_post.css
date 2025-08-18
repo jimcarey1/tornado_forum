@@ -44,3 +44,24 @@
 .handle-comment > button[value="Cancel"]{
     background-color: red;
 }
+
+.comments-section{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.comment-detail{
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-meta{
+    display: flex;
+    gap: 40px;
+}
+
+.comment-votes{
+    display: flex;
+    gap: 20px;
+}
