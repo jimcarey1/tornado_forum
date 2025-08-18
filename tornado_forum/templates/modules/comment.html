@@ -1,5 +1,6 @@
 <div class="comment-detail" id="{{ comment.id }}">
     <div class="comment-message">
+        {{ comment.user.username }}
         <p>{% raw comment.content %}</p>
     </div>
     <div class="comment-meta">

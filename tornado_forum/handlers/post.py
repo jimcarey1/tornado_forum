@@ -1,10 +1,10 @@
 import tornado
 from sqlalchemy import insert, select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 import json
 
 from .base import BaseHandler
-from models.post import Topic
+from models.post import Topic, Comment
 
 
 class CreateTopicHandler(BaseHandler):
@@ -30,10 +30,11 @@ class CreateTopicHandler(BaseHandler):
 class ViewTopicHanlder(BaseHandler):
     async def get(self, topic_id):
         async with self.application.asession() as sess:
-            stmt = select(Topic).options(joinedload(Topic.comments)).where(Topic.id == topic_id)
+            stmt = select(Topic) \
+                    .options(joinedload(Topic.user), selectinload(Topic.comments).selectinload(Comment.user)) \
+                    .where(Topic.id == topic_id)
             topic = await sess.execute(stmt)
             topic = topic.unique().scalar_one_or_none()
-            print(topic.comments)
         self.render('post/view_post.html', topic=topic)
 
 class DeleteTopicHandler(BaseHandler):

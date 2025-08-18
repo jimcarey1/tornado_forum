@@ -11,6 +11,7 @@
 {% block content %}
     <div class="topic-page" id="{{ topic.id }}">
         <div class="topic-details">
+            {{topic.user.username}}
             <h2>{{topic.title}}</h2>
             <p>{{topic.content}}</p>
         </div>
