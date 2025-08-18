@@ -29,3 +29,8 @@ class CommentVoteHandler(BaseHandler):
     @tornado.web.authenticated
     async def post(self, comment_id):
         pass
+
+
+class CommentModule(tornado.web.UIModule):
+    def render(self, comment):
+        return self.render_string('modules/comment.html', comment=comment)

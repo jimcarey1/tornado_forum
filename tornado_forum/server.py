@@ -7,7 +7,7 @@ from handlers.user import UserLoginHandler, UserRegisterHandler, UserLogoutHandl
 from handlers.core import HomeHandler
 from handlers.forum import CreateForumHandler, ViewForumHandler
 from handlers.post import CreateTopicHandler, ViewTopicHanlder
-from handlers.comment import CreateCommentHandler
+from handlers.comment import CreateCommentHandler, CommentModule
 
 BASE_PATH = Path(__file__).parent
 
@@ -29,6 +29,7 @@ class MyApplication(tornado.web.Application):
             title = 'tornado forum',
             xsrf_cookies = True,
             debug = True,
+            ui_modules = {'Comment': CommentModule},
             cookie_secret = 'DANGER, YOU ARE BEING CONSTANTLY WATCHED.',
             template_path = f'{BASE_PATH}/templates',
             static_path = f'{BASE_PATH}/static',
