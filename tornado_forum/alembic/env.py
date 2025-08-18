@@ -12,6 +12,7 @@ from models.user import User
 from models.forum import Forum
 from models.post import Topic, Comment
 from models.base import Base
+from models.vote import VoteComment, VoteTopic
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

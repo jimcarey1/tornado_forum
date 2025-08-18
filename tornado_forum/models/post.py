@@ -20,6 +20,8 @@ class Topic(Base):
     user = relationship('User', back_populates='topics')
 
     comments = relationship('Comment', back_populates='topic')
+    votes = relationship('VoteTopic', back_populates='topic')
+    score: Mapped[int] = mapped_column(Integer, default=0)
 
     def __repr__(self):
         return f"<Topic(id={self.id}, title='{self.title}'>"
@@ -41,6 +43,9 @@ class Comment(Base):
 
     topic  = relationship('Topic', back_populates='comments')
     user = relationship('User', back_populates='comments')
+
+    votes = relationship('VoteComment', back_populates='comment')
+    score: Mapped[int] = mapped_column(Integer, default=0)
 
     def __repr__(self):
         return f"<Comment(id={self.id}, content='{self.content[:20]}...')>"

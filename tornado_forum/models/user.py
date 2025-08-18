@@ -17,6 +17,8 @@ class User(Base):
 
     topics = relationship('Topic', back_populates='user')
     comments = relationship('Comment', back_populates='user')
+    topic_votes = relationship('VoteTopic', back_populates='user')
+    comment_votes = relationship('VoteComment', back_populates='user')
 
     def __repr__(self):
         return f'User(id: {self.id}, username: {self.username})'
