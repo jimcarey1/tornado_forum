@@ -17,8 +17,9 @@
         </div>
         <div class="topic-meta">
             <div class="topic-votes">
-                <i class="fa-solid fa-arrow-up"></i>
-                <i class="fa-solid fa-arrow-down"></i>
+                <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-topic-id="{{ topic.id }}"></i>
+                <span class="score">{{ topic.score }}</span>
+                <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-topic-id="{{ topic.id }}"></i>
             </div>
             <i class="fa-solid fa-reply"></i>
         </div>
@@ -41,4 +42,5 @@
 {% block javascript %}
     <script src="{{ static_url('js/utils.js') }}"></script>
     <script src="{{ static_url('js/createComment.js') }}"></script>
+    <script src="{{ static_url('js/handleVote.js') }}"></script>
 {% end %}

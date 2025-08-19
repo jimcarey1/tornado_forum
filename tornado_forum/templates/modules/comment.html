@@ -5,9 +5,10 @@
     </div>
     <div class="comment-meta">
         <div class="comment-votes">
-            <i class="fa-solid fa-arrow-up"></i>
-            <i class="fa-solid fa-arrow-down"></i>
-        </div>
+                <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-comment-id="{{ comment.id }}"></i>
+                <span class="score">{{ comment.score }}</span>
+                <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-comment-id="{{ comment.id }}"></i>
+            </div>
         <i class="fa-solid fa-reply"></i>
     </div>
 </div>
