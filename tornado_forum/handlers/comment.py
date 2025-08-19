@@ -13,14 +13,26 @@ class CreateCommentHandler(BaseHandler):
         data = json.loads(self.request.body)
         content = data.get('content', '')
         user_id = self.current_user.id
+        
         async with self.application.asession() as sess:
-            stmt = insert(Comment).values(content=content, topic_id=topic_id, user_id=user_id)
-            # print(stmt.compile(compile_kwargs={'literal_binds':True}))
-            comment_primary_key = await sess.execute(stmt)
-            await sess.commit()
-        print(comment_primary_key)
+            async with sess.begin():
+                stmt = insert(Comment).values(content=content, topic_id=topic_id, user_id=user_id).returning(Comment)
+                result = await sess.execute(stmt)
+                new_comment = result.scalar_one()
+                
+                await sess.refresh(new_comment, attribute_names=['user'])
+                
+                comment_data = {
+                    "id": new_comment.id,
+                    "content": new_comment.content,
+                    "user": {
+                        "username": new_comment.user.username
+                    },
+                    "score": new_comment.score
+                }
+
         self.set_header('Content-Type', 'application/json')
-        self.write({'status': 'ok'})
+        self.write(comment_data)
 
 class DeleteCommentHandler(BaseHandler):
     @tornado.web.authenticated
