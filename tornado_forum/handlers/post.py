@@ -31,11 +31,22 @@ class CreateTopicHandler(BaseHandler):
 class ViewTopicHanlder(BaseHandler):
     async def get(self, topic_id):
         async with self.application.asession() as sess:
-            stmt = select(Topic) \
-                    .options(joinedload(Topic.user), selectinload(Topic.comments).selectinload(Comment.user)) \
-                    .where(Topic.id == topic_id)
-            topic = await sess.execute(stmt)
-            topic = topic.unique().scalar_one_or_none()
+            stmt = select(Topic).options(
+                joinedload(Topic.user),
+                selectinload(Topic.root_comments).selectinload(Comment.user),
+                selectinload(Topic.root_comments).selectinload(Comment.children).selectinload(Comment.user)
+            ).where(Topic.id == topic_id)
+            print(stmt.compile(compile_kwargs={'literal_binds':True}))
+            
+            result = await sess.execute(stmt)
+            topic = result.unique().scalar_one_or_none()
+            print(topic)
+
+            if topic:
+                print(topic.root_comments)
+            for comment in topic.root_comments:
+                print(comment.children)
+
         self.render('post/view_post.html', topic=topic)
 
 class DeleteTopicHandler(BaseHandler):

@@ -32,7 +32,7 @@
         </div>
         <div class="comments-section">
             <h4>Comments:</h4>
-            {% for comment in topic.comments %}
+            {% for comment in topic.root_comments %}
             {% module Comment(comment) %}
             {% end %}
         </div>

@@ -1,4 +1,4 @@
-<div class="comment-detail" id="{{ comment.id }}">
+<div class="comment-detail" id="comment-{{ comment.id }}" data-comment-id="{{ comment.id }}">
     <div class="comment-message">
         {{ comment.user.username }}
         <p>{% raw comment.content %}</p>
@@ -8,7 +8,21 @@
                 <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-comment-id="{{ comment.id }}"></i>
                 <span class="score">{{ comment.score }}</span>
                 <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-comment-id="{{ comment.id }}"></i>
-            </div>
-        <i class="fa-solid fa-reply"></i>
+        </div>
+        <i class="fa-solid fa-reply reply-btn"></i>
+    </div>
+    <div class="reply-form" style="display: none;">
+        <div class="editor"></div>
+        <div class="handle-comment">
+            <button value="Reply" class="reply-comment" type="button">Reply</button>
+            <button value="Cancel" class="cancel-comment" type="button">Cancel</button>
+        </div>
+    </div>
+    <div class="child-comments">
+        {% if comment.children %}
+            {% for child in comment.children %}
+                {% module Comment(child) %}
+            {% end %}
+        {% end %}
     </div>
 </div>

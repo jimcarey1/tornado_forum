@@ -12,11 +12,17 @@ class CreateCommentHandler(BaseHandler):
     async def post(self, topic_id):
         data = json.loads(self.request.body)
         content = data.get('content', '')
+        parent_id = data.get('parent_id')
         user_id = self.current_user.id
         
         async with self.application.asession() as sess:
             async with sess.begin():
-                stmt = insert(Comment).values(content=content, topic_id=topic_id, user_id=user_id).returning(Comment)
+                stmt = insert(Comment).values(
+                    content=content, 
+                    topic_id=topic_id, 
+                    user_id=user_id,
+                    parent_id=parent_id
+                ).returning(Comment)
                 result = await sess.execute(stmt)
                 new_comment = result.scalar_one()
                 
@@ -28,7 +34,9 @@ class CreateCommentHandler(BaseHandler):
                     "user": {
                         "username": new_comment.user.username
                     },
-                    "score": new_comment.score
+                    "score": new_comment.score,
+                    "parent_id": new_comment.parent_id,
+                    "children": []
                 }
 
         self.set_header('Content-Type', 'application/json')
