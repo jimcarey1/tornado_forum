@@ -60,20 +60,22 @@ class TopicVoteHandler(BaseHandler):
             else:
                 vote = VoteTopic(topic_id=topic_id, user_id=user_id, vote_type=VoteType(vote_type))
                 sess.add(vote)
-                print('we are adding the vote.')
             
             await sess.flush()
             
             upvotes = await sess.execute(select(func.count(VoteTopic.topic_id)).where(VoteTopic.topic_id == topic_id, VoteTopic.vote_type == VoteType.UPVOTE))
             downvotes = await sess.execute(select(func.count(VoteTopic.topic_id)).where(VoteTopic.topic_id == topic_id, VoteTopic.vote_type == VoteType.DOWNVOTE))
+
+            upvotes = upvotes.scalar_one()
+            downvotes = downvotes.scalar_one()
             
             topic = await sess.get(Topic, topic_id)
-            topic.score = upvotes.scalar_one() - downvotes.scalar_one()
+            topic.score = upvotes - downvotes
             
             await sess.commit()
         
         self.write({
-            'upvotes': upvotes.scalar_one(),
-            'downvotes': downvotes.scalar_one()
+            'upvotes': upvotes,
+            'downvotes': downvotes
         })
 
