@@ -34,7 +34,6 @@ class ViewTopicHanlder(BaseHandler):
             stmt = select(Topic).options(
                 joinedload(Topic.user),
                 selectinload(Topic.root_comments).selectinload(Comment.user),
-                selectinload(Topic.root_comments).selectinload(Comment.children).selectinload(Comment.user)
             ).where(Topic.id == topic_id)
             print(stmt.compile(compile_kwargs={'literal_binds':True}))
             
@@ -44,8 +43,6 @@ class ViewTopicHanlder(BaseHandler):
 
             if topic:
                 print(topic.root_comments)
-            for comment in topic.root_comments:
-                print(comment.children)
 
         self.render('post/view_post.html', topic=topic)
 

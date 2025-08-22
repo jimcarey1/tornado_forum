@@ -18,11 +18,4 @@
             <button value="Cancel" class="cancel-comment" type="button">Cancel</button>
         </div>
     </div>
-    <div class="child-comments">
-        {% if comment.children %}
-            {% for child in comment.children %}
-                {% module Comment(child) %}
-            {% end %}
-        {% end %}
-    </div>
 </div>
