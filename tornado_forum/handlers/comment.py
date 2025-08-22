@@ -1,5 +1,6 @@
 import tornado
 from sqlalchemy import insert, select, func
+from sqlalchemy.orm import selectinload
 import json
 
 from .base import BaseHandler
@@ -83,6 +84,36 @@ class CommentVoteHandler(BaseHandler):
             'upvotes': upvotes,
             'downvotes': downvotes,
         })
+
+
+
+
+
+class CommentChildrenHandler(BaseHandler):
+    async def get(self, comment_id):
+        async with self.application.asession() as sess:
+            stmt = (
+                select(Comment)
+                .options(selectinload(Comment.user), selectinload(Comment.children))
+                .where(Comment.parent_id == comment_id)
+            )
+            result = await sess.execute(stmt)
+            children = result.unique().scalars().all()
+
+            response_data = []
+            for child in children:
+                response_data.append(
+                    {
+                        "id": child.id,
+                        "content": child.content,
+                        "user": {"username": child.user.username},
+                        "score": child.score,
+                        "children_count": len(child.children),
+                        "topic_id": child.topic_id,
+                    }
+                )
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(response_data))
 
 
 class CommentModule(tornado.web.UIModule):

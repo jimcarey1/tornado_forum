@@ -1,21 +1,31 @@
-<div class="comment-detail" id="comment-{{ comment.id }}" data-comment-id="{{ comment.id }}">
-    <div class="comment-message">
-        {{ comment.user.username }}
-        <p>{% raw comment.content %}</p>
-    </div>
-    <div class="comment-meta">
-        <div class="comment-votes">
-                <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-comment-id="{{ comment.id }}"></i>
-                <span class="score">{{ comment.score }}</span>
-                <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-comment-id="{{ comment.id }}"></i>
+<div class="comment-container" id="comment-{{ comment.id }}" data-comment-id="{{ comment.id }}">
+    <div class="comment-main">
+        <div class="comment-toggle">
+            {% if comment.children %}
+            <span class="toggle-children" data-comment-id="{{ comment.id }}">[+]</span>
+            {% end %}
         </div>
-        <i class="fa-solid fa-reply reply-btn"></i>
-    </div>
-    <div class="reply-form" style="display: none;">
-        <div class="editor"></div>
-        <div class="handle-comment">
-            <button value="Reply" class="reply-comment" type="button">Reply</button>
-            <button value="Cancel" class="cancel-comment" type="button">Cancel</button>
+        <div class="comment-content">
+            <div class="comment-details">
+                <p><strong>{{ comment.user.username }}</strong></p>
+                <p>{% raw comment.content %}</p>
+            </div>
+            <div class="comment-meta">
+                <div class="comment-votes">
+                    <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-comment-id="{{ comment.id }}"></i>
+                    <span class="score">{{ comment.score }}</span>
+                    <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-comment-id="{{ comment.id }}"></i>
+                </div>
+                <i class="fa-solid fa-reply reply-btn"></i>
+            </div>
+            <div class="reply-form" style="display: none;">
+                <div class="editor"></div>
+                <div class="handle-comment">
+                    <button value="Reply" class="reply-comment" type="button">Reply</button>
+                    <button value="Cancel" class="cancel-comment" type="button">Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
+    <div class="children" id="children-of-{{ comment.id }}"></div>
 </div>

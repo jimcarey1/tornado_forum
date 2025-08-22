@@ -7,7 +7,7 @@ from handlers.user import UserLoginHandler, UserRegisterHandler, UserLogoutHandl
 from handlers.core import HomeHandler
 from handlers.forum import CreateForumHandler, ViewForumHandler
 from handlers.post import CreateTopicHandler, ViewTopicHanlder, TopicVoteHandler
-from handlers.comment import CreateCommentHandler, CommentModule, CommentVoteHandler
+from handlers.comment import CreateCommentHandler, CommentModule, CommentVoteHandler, CommentChildrenHandler
 
 BASE_PATH = Path(__file__).parent
 
@@ -26,6 +26,7 @@ class MyApplication(tornado.web.Application):
             (r'/topic/(\d+)/comment/create', CreateCommentHandler),
             (r'/topic/(\d+)/vote', TopicVoteHandler),
             (r'/comment/(\d+)/vote', CommentVoteHandler),
+            (r'/comment/(\d+)/children', CommentChildrenHandler),
         ]
         settings = dict(
             title = 'tornado forum',
