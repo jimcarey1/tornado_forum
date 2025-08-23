@@ -1,196 +1,72 @@
+//Only managing one CKEditor instance for all replies.
+let ckEditorInstance = null
 
-document.addEventListener('DOMContentLoaded', () => {
-    const editors = {};
+const replyButton = document.querySelector(".topic-meta .fa-reply")
+const createCKEditorInstance = async (event)=>{
+    const replyButton = event.target
+    const topicReplyContainer = document.querySelector('#thread-reply')
 
-    document.body.addEventListener('click', async (event) => {
-        // Handle opening the reply form for a comment
-        if (event.target.classList.contains('reply-btn')) {
-            const commentDetail = event.target.closest('.comment-detail');
-            const commentId = commentDetail.dataset.commentId;
-            const replyForm = commentDetail.querySelector('.reply-form');
+    const isHidden = topicReplyContainer.style.display === 'none'
+    topicReplyContainer.style.display = isHidden ? 'block' : 'none'
 
-            const isHidden = replyForm.style.display === 'none';
-            replyForm.style.display = isHidden ? 'block' : 'none';
-
-            if (isHidden && !editors[commentId]) {
-                try {
-                    const editorElement = replyForm.querySelector('.editor');
-                    if (editorElement) {
-                        editors[commentId] = await ClassicEditor.create(editorElement);
-                    }
-                } catch (error) {
-                    console.error('Error creating editor:', error);
-                }
+    if (isHidden && !ckEditorInstance) {
+        try {
+            const editorElement = topicReplyContainer.querySelector('#editor')
+            if (editorElement) {
+                ckEditorInstance = await ClassicEditor.create(editorElement)
             }
+        } catch (error) {
+            console.error('Error creating top-level editor:', error);
         }
-
-        // Handle submitting a reply
-        if (event.target.classList.contains('reply-comment')) {
-            const commentDetail = event.target.closest('.comment-detail');
-            const parentId = commentDetail.dataset.commentId;
-            const editor = editors[parentId];
-            const content = editor.getData();
-            
-            const topicContainer = document.querySelector('.topic-page');
-            const topicId = topicContainer.id;
-            const url = `/topic/${topicId}/comment/create`;
-
-            if (content) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Xsrftoken': getCookie('_xsrf')
-                        },
-                        body: JSON.stringify({ content: content, parent_id: parentId })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP Error: ${response.status}`);
-                    }
-
-                    const newComment = await response.json();
-                    
-                    const newCommentHtml = `
-                        <div class="comment-detail" id="comment-${newComment.id}" data-comment-id="${newComment.id}">
-                            <div class="comment-message">
-                                ${newComment.user.username}
-                                <p>${newComment.content}</p>
-                            </div>
-                            <div class="comment-meta">
-                                <div class="comment-votes">
-                                    <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-comment-id="${newComment.id}"></i>
-                                    <span class="score">${newComment.score}</span>
-                                    <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-comment-id="${newComment.id}"></i>
-                                </div>
-                                <i class="fa-solid fa-reply reply-btn"></i>
-                            </div>
-                            <div class="reply-form" style="display: none;">
-                                <div class="editor"></div>
-                                <div class="handle-comment">
-                                    <button value="Reply" class="reply-comment" type="button">Reply</button>
-                                    <button value="Cancel" class="cancel-comment" type="button">Cancel</button>
-                                </div>
-                            </div>
-                            <div class="child-comments"></div>
-                        </div>
-                    `;
-
-                    const childCommentsContainer = commentDetail.querySelector('.child-comments');
-                    childCommentsContainer.insertAdjacentHTML('beforeend', newCommentHtml);
-
-                    editor.setData('');
-                    const replyForm = commentDetail.querySelector('.reply-form');
-                    replyForm.style.display = 'none';
-
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            }
-        }
-
-        // Handle canceling a reply
-        if (event.target.classList.contains('cancel-comment')) {
-            const commentDetail = event.target.closest('.comment-detail');
-            const replyForm = commentDetail.querySelector('.reply-form');
-            replyForm.style.display = 'none';
-        }
-    });
-
-    // Handling the top-level comment form
-    const topLevelReplyIcon = document.querySelector('.topic-meta .fa-reply');
-    const topLevelReplyContainer = document.querySelector('#thread-reply');
-    let topLevelEditor;
-
-    if (topLevelReplyIcon) {
-        topLevelReplyIcon.addEventListener('click', async () => {
-            const isHidden = topLevelReplyContainer.style.display === 'none';
-            topLevelReplyContainer.style.display = isHidden ? 'block' : 'none';
-
-            if (isHidden && !topLevelEditor) {
-                try {
-                    const editorElement = topLevelReplyContainer.querySelector('#editor');
-                    if (editorElement) {
-                        topLevelEditor = await ClassicEditor.create(editorElement);
-                    }
-                } catch (error) {
-                    console.error('Error creating top-level editor:', error);
-                }
-            }
-        });
     }
-
-    const topLevelReplyButton = document.querySelector('#thread-reply .reply-comment');
-    if (topLevelReplyButton) {
-        topLevelReplyButton.addEventListener('click', async () => {
-            const content = topLevelEditor.getData();
-            const url = topLevelReplyContainer.dataset.url;
-
-            if (content) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Xsrftoken': getCookie('_xsrf')
-                        },
-                        body: JSON.stringify({ content: content, parent_id: null })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP Error: ${response.status}`);
-                    }
-                    
-                    const newComment = await response.json();
-
-                    const newCommentHtml = `
-                        <div class="comment-detail" id="comment-${newComment.id}" data-comment-id="${newComment.id}">
-                            <div class="comment-message">
-                                ${newComment.user.username}
-                                <p>${newComment.content}</p>
-                            </div>
-                            <div class="comment-meta">
-                                <div class="comment-votes">
-                                    <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-comment-id="${newComment.id}"></i>
-                                    <span class="score">${newComment.score}</span>
-                                    <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-comment-id="${newComment.id}"></i>
-                                </div>
-                                <i class="fa-solid fa-reply reply-btn"></i>
-                            </div>
-                            <div class="reply-form" style="display: none;">
-                                <div class="editor"></div>
-                                <div class="handle-comment">
-                                    <button value="Reply" class="reply-comment" type="button">Reply</button>
-                                    <button value="Cancel" class="cancel-comment" type="button">Cancel</button>
-                                </div>
-                            </div>
-                            <div class="child-comments"></div>
-                        </div>
-                    `;
-
-                    const commentsSection = document.querySelector('.comments-section');
-                    commentsSection.insertAdjacentHTML('beforeend', newCommentHtml);
-
-                    topLevelEditor.setData('');
-                    topLevelReplyContainer.style.display = 'none';
-
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            }
-        });
-    }
-    
-    const topLevelCancelButton = document.querySelector('#thread-reply .cancel-comment');
-    if (topLevelCancelButton) {
-        topLevelCancelButton.addEventListener('click', () => {
-            topLevelReplyContainer.style.display = 'none';
-        });
-    }
-});
-
-function getCookie(name) {
-    let r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
-    return r ? r[1] : undefined;
 }
+replyButton.onclick = createCKEditorInstance;
+
+const createTopicReplyButton = document.querySelector("#thread-reply .handle-comment .reply-comment")
+const createParentComment = async (event)=>{
+    const topicReplyElement = document.getElementById("thread-reply")
+    const url = topicReplyElement.dataset.url
+    const data = ckEditorInstance.getData();
+    if(data){
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('_xsrf')
+            },
+            body: JSON.stringify({"content": data})
+        })
+        if(response){
+            const data = await response.json()
+            ckEditorInstance = null
+            topicReplyElement.style.display = 'none'
+        }
+    }
+}
+createTopicReplyButton.onclick = createParentComment
+
+const commentReplyButtons = document.querySelectorAll(".comment-action .comment-reply-btn .fa-reply")
+const createCKEditorInstanceForCommentReply = async (event) =>{
+    const commentReplyButton = event.target
+    const commentId = commentReplyButton.dataset.commentId;
+    const commentReplyContainer = document.getElementById(`comment-reply-${commentId}`)
+    const isHidden = commentReplyContainer.style.display === 'none'
+    commentReplyContainer.style.display = isHidden ? 'block' : 'none'
+    if (isHidden && !ckEditorInstance){
+        const editorElement = document.getElementById(`editor-${commentId}`)
+        try{
+            if(editorElement){
+                ckEditorInstance = await ClassicEditor.create(editorElement)
+            }else{
+                console.log('editorElement not found.')
+            }
+        }catch(error){
+            console.log('Error creating the CKEditor Instance:', error)
+        }
+    }
+}
+commentReplyButtons.forEach((button)=>{
+    button.addEventListener('click', createCKEditorInstanceForCommentReply)
+})
+
+

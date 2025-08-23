@@ -34,7 +34,7 @@ class ViewTopicHanlder(BaseHandler):
             stmt = select(Topic).options(
                 joinedload(Topic.user),
                 selectinload(Topic.root_comments).selectinload(Comment.user),
-                selectinload(Topic.root_comments).selectinload(Comment.children),
+                selectinload(Topic.root_comments).selectinload(Comment.children).selectinload(Comment.user),
             ).where(Topic.id == topic_id)
             print(stmt.compile(compile_kwargs={'literal_binds':True}))
             

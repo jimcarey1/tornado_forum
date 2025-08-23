@@ -46,22 +46,17 @@
 }
 
 .comments-section{
+    margin-left: 50px;
+}
+
+.comments-section .comment{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 6px;
+    margin-bottom: 10px;
 }
 
-.comment-detail{
+.comment-action{
     display: flex;
-    flex-direction: column;
-}
-
-.comment-meta{
-    display: flex;
-    gap: 40px;
-}
-
-.comment-votes{
-    display: flex;
-    gap: 20px;
+    gap: 18px;
 }
