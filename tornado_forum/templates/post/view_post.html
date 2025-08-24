@@ -26,21 +26,20 @@
     </style>
 {% end %}
 {% block content %}
-    <div class="topic-page" id="{{ topic.id }}">
+    <div class="topic-page" id="{{ topic['id'] }}">
         <div class="topic-details">
-            {{topic.user.username}}
-            <h2>{{topic.title}}</h2>
-            <p>{{topic.content}}</p>
+            <h2>{{ topic['title'] }}</h2>
+            <p>{{ topic['content'] }}</p>
         </div>
         <div class="topic-meta">
             <div class="topic-votes">
-                <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-topic-id="{{ topic.id }}"></i>
-                <span class="score">{{ topic.score }}</span>
-                <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-topic-id="{{ topic.id }}"></i>
+                <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-topic-id="{{ topic['id'] }}"></i>
+                <span class="score">{{ topic['score'] }}</span>
+                <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-topic-id="{{ topic['id'] }}"></i>
             </div>
             <i class="fa-solid fa-reply"></i>
         </div>
-        <div id='thread-reply' data-url="/topic/{{topic.id}}/comment/create" style="display: none;">
+        <div id='thread-reply' data-url="/topic/{{topic['id']}}/comment/create" style="display: none;">
             <div id='editor'></div>
             <div class="handle-comment">
                 <button value="Reply" class="reply-comment" type="button">Reply</button>
@@ -49,7 +48,7 @@
         </div>
         <div class="comments-section">
             <h4>Comments:</h4>
-            {% for comment in topic.root_comments %}
+            {% for comment in topic['comments'] %}
             {% module Comment(comment) %}
             {% end %}
         </div>

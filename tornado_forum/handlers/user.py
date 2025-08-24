@@ -1,4 +1,5 @@
 from sqlalchemy import select, insert, or_
+from sqlalchemy.orm import selectinload
 import tornado
 import bcrypt
 
@@ -79,3 +80,10 @@ class UserLogoutHandler(BaseHandler):
     def get(self):
         self.clear_cookie('app_cookie')
         self.redirect('/auth/login')
+
+class UserProfileHandler(BaseHandler):
+    async def get(self, user_id:int, username:str):
+        stmt = select(User).options(selectinload(User.topics), selectinload(User.comments)).where(User.id==user_id)
+        print(stmt.compile(compile_kwargs={'literal_binds':True}))
+        async with self.application.asession() as sess:
+            user = await sess.execute()

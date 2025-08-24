@@ -24,3 +24,8 @@
         </div>
     </div>
 </div>
+{% if hasattr(comment, 'children_in_tree') %}
+    {% for child_comment in comment.children_in_tree %}
+        {% module Comment(child_comment) %}
+    {% end %}
+{% end %}

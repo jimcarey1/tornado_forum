@@ -2,10 +2,12 @@ import tornado
 from sqlalchemy import insert, select, func
 from sqlalchemy.orm import joinedload, selectinload
 import json
+import asyncio
 
 from .base import BaseHandler
 from models.post import Topic, Comment
 from models.vote import VoteTopic, VoteType
+from utils.comment_tree import build_comment_tree
 
 
 class CreateTopicHandler(BaseHandler):
@@ -33,19 +35,32 @@ class ViewTopicHanlder(BaseHandler):
         async with self.application.asession() as sess:
             stmt = select(Topic).options(
                 joinedload(Topic.user),
-                selectinload(Topic.root_comments).selectinload(Comment.user),
-                selectinload(Topic.root_comments).selectinload(Comment.children).selectinload(Comment.user),
+                selectinload(Topic.comments).selectinload(Comment.user),
             ).where(Topic.id == topic_id)
             print(stmt.compile(compile_kwargs={'literal_binds':True}))
             
             result = await sess.execute(stmt)
             topic = result.unique().scalar_one_or_none()
-            print(topic)
 
-            if topic:
-                print(topic.root_comments)
+        if topic:
+            comments = topic.comments
+            comment_tree = await tornado.ioloop.IOLoop.current().run_in_executor(None, build_comment_tree, comments)
+            context = {
+                'topic':{
+                    'id': topic.id,
+                    'forum_id': topic.forum_id,
+                    'score': topic.score,
+                    'title': topic.title,
+                    'content': topic.content,
+                    'user': {
+                        'id': topic.user_id,
+                        'username': topic.user.username,
+                    },
+                    'comments': comment_tree
+                }
+            }
 
-        self.render('post/view_post.html', topic=topic)
+        self.render('post/view_post.html', **context)
 
 class DeleteTopicHandler(BaseHandler):
     async def post(self, topic_id):

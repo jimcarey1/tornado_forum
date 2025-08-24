@@ -3,7 +3,7 @@ import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from pathlib import Path
 
-from handlers.user import UserLoginHandler, UserRegisterHandler, UserLogoutHandler
+from handlers.user import UserLoginHandler, UserRegisterHandler, UserLogoutHandler, UserProfileHandler
 from handlers.core import HomeHandler
 from handlers.forum import CreateForumHandler, ViewForumHandler
 from handlers.post import CreateTopicHandler, ViewTopicHanlder, TopicVoteHandler
@@ -27,6 +27,7 @@ class MyApplication(tornado.web.Application):
             (r'/topic/(\d+)/vote', TopicVoteHandler),
             (r'/comment/(\d+)/vote', CommentVoteHandler),
             (r'/comment/(\d+)/children', CommentChildrenHandler),
+            (r'/user/(\d+)/(\w+)', UserProfileHandler),
         ]
         settings = dict(
             title = 'tornado forum',
