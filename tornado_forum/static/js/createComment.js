@@ -53,7 +53,7 @@ const createParentComment = async (event)=>{
                         <div class="comment-vote-btn">
                             <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-comment-id="${data.id}" onclick="handleVote(event)"></i>
                             <span class="score">${data.score}</span>
-                            <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-comment-id="${data.id} onclick="handleVote(event)"></i>
+                            <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-comment-id="${data.id}" onclick="handleVote(event)"></i>
                         </div>
                         <div class="comment-reply-btn">
                             <i class="fa-solid fa-reply" data-comment-id="${data.id}" onclick="createCKEditorInstanceForCommentReply(event)"></i>

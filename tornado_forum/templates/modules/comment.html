@@ -7,9 +7,9 @@
     </div>
     <div class="comment-action">
         <div class="comment-vote-btn">
-            <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-topic-id="{{ comment.id }}"></i>
+            <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-comment-id="{{ comment.id }}"></i>
             <span class="score">{{ comment.score }}</span>
-            <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-topic-id="{{ comment.id }}"></i>
+            <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-comment-id="{{ comment.id }}"></i>
         </div>
         <div class="comment-reply-btn">
             <i class="fa-solid fa-reply" data-comment-id="{{ comment.id }}"></i>
