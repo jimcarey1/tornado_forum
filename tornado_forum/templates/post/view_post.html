@@ -28,6 +28,7 @@
 {% block content %}
     <div class="topic-page" id="{{ topic['id'] }}">
         <div class="topic-details">
+            <p>{{topic['user']['username']}}</p>
             <h2>{{ topic['title'] }}</h2>
             <p>{{ topic['content'] }}</p>
         </div>
@@ -47,9 +48,10 @@
             </div>
         </div>
         <div class="comments-section">
-            <h4>Comments:</h4>
             {% for comment in topic['comments'] %}
-            {% module Comment(comment) %}
+            <div class="top-level-comment">
+                {% module Comment(comment) %}
+            </div>
             {% end %}
         </div>
     </div>

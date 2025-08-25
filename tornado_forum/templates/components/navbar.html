@@ -3,7 +3,14 @@
         <h2>Tornado</h2>
     </div>
     <div class='auth-related'>
-        <button>Login</button>
-        <button>Register</button>
+        {% if not current_user %}
+            <button>Login</button>
+            <button>Register</button>
+        {% else %}
+            <button>Chat</button>
+            <button>Notification</button>
+            <button>Logout</button>
+            <button>Profile</button>
+        {% end %}
     </div>
 </div>

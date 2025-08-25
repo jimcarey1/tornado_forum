@@ -25,7 +25,9 @@
     </div>
 </div>
 {% if hasattr(comment, 'children_in_tree') %}
+    <div data-parent-id="{{comment.id}}" data-comment-depth="{{comment.depth+1}}">
     {% for child_comment in comment.children_in_tree %}
         {% module Comment(child_comment) %}
     {% end %}
+    </div>
 {% end %}
