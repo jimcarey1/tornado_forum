@@ -20,5 +20,7 @@ class User(Base):
     topic_votes = relationship('VoteTopic', back_populates='user')
     comment_votes = relationship('VoteComment', back_populates='user')
 
+    sent_messages = relationship('Message', back_populates='sender')
+
     def __repr__(self):
         return f'User(id: {self.id}, username: {self.username})'
