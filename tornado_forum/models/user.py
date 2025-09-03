@@ -21,6 +21,7 @@ class User(Base):
     comment_votes = relationship('VoteComment', back_populates='user')
 
     sent_messages = relationship('Message', back_populates='sender')
+    joined_rooms = relationship('RoomMember', back_populates='user')
 
     def __repr__(self):
         return f'User(id: {self.id}, username: {self.username})'

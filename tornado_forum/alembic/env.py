@@ -13,7 +13,7 @@ from models.forum import Forum
 from models.post import Topic, Comment
 from models.base import Base
 from models.vote import VoteComment, VoteTopic
-from models.chat import Room, Message
+from models.chat import Room, Message, RoomMember
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

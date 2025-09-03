@@ -7,8 +7,8 @@ class ChatHandler(BaseHandler):
         return self.render('chat/chat.html')
 
 class MessageHandler(tornado.websocket.WebSocketHandler):
-    def open(self):
-        print('new connection.')
+    def open(self, room):
+        self.room = room
         self.write_message('Hello World')
 
     def on_message(self, message):
