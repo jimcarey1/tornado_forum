@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat Room</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    #chat-box {
+      border: 1px solid #ccc;
+      height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .message {
+      margin: 5px 0;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    .mine {
+      background: #e1ffc7;
+      text-align: right;
+    }
+    .other {
+      background: #f1f1f1;
+    }
+    .pending {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <h2>Chat Room</h2>
+
+  <div>
+    <label>Room ID: <input id="roomId" value="general"></label>
+    <button id="joinBtn">Join Room</button>
+  </div>
+
+  <div id="chat-box"></div>
+
+  <div>
+    <input id="msgInput" placeholder="Type message..." style="width:80%">
+    <button id="sendBtn">Send</button>
+  </div>
+
+  <script>
+    let ws;
+    let roomId;
+    let userId = "user123"; // in real app, inject from backend auth
+    let pendingMessages = {}; // client_msg_id → DOM element
+
+    function connect() {
+      ws = new WebSocket("ws://localhost:8888/ws"); // adjust host/port
+
+      ws.onopen = () => {
+        console.log("Connected to WS");
+      };
+
+      ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        console.log("Received:", msg);
+
+        if (msg.type === "history") {
+          msg.messages.reverse().forEach(addMessageFromServer);
+        } else if (msg.type === "message") {
+          addMessageFromServer(msg.message);
+        } else if (msg.type === "sent_ack") {
+          // Replace pending bubble with final DB ID
+          const bubble = pendingMessages[msg.client_msg_id];
+          if (bubble) {
+            bubble.classList.remove("pending");
+            bubble.dataset.id = msg.id;
+            delete pendingMessages[msg.client_msg_id];
+          }
+        }
+      };
+
+      ws.onclose = () => {
+        console.log("WS disconnected, retrying...");
+        setTimeout(connect, 2000); // auto-reconnect
+      };
+    }
+
+    function joinRoom() {
+      roomId = document.getElementById("roomId").value;
+      ws.send(JSON.stringify({ type: "join", room_id: roomId }));
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("msgInput");
+      const text = input.value.trim();
+      if (!text || !roomId) return;
+
+      const clientMsgId = "c_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
+      const payload = {
+        type: "send",
+        room_id: roomId,
+        content: text,
+        client_msg_id: clientMsgId,
+      };
+
+      // Optimistically add to chat box
+      const bubble = addMessageToChat({
+        content: text,
+        from_user: userId,
+        pending: true,
+        client_msg_id: clientMsgId
+      });
+      pendingMessages[clientMsgId] = bubble;
+
+      ws.send(JSON.stringify(payload));
+      input.value = "";
+    }
+
+    function addMessageFromServer(m) {
+      const isMine = (m.from_user === userId);
+      const bubble = addMessageToChat({
+        id: m.id,
+        content: m.content,
+        from_user: m.from_user,
+        pending: false,
+        client_msg_id: m.client_msg_id
+      });
+
+      // If this was pending, replace it
+      if (pendingMessages[m.client_msg_id]) {
+        pendingMessages[m.client_msg_id].remove();
+        delete pendingMessages[m.client_msg_id];
+      }
+    }
+
+    function addMessageToChat({id, content, from_user, pending, client_msg_id}) {
+      const chatBox = document.getElementById("chat-box");
+      const div = document.createElement("div");
+      div.className = "message " + (from_user === userId ? "mine" : "other");
+      if (pending) div.classList.add("pending");
+      div.textContent = content;
+      if (id) div.dataset.id = id;
+      if (client_msg_id) div.dataset.client_msg_id = client_msg_id;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return div;
+    }
+
+    document.getElementById("joinBtn").onclick = joinRoom;
+    document.getElementById("sendBtn").onclick = sendMessage;
+    document.getElementById("msgInput").addEventListener("keypress", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    connect();
+  </script>
+</body>
+</html>
