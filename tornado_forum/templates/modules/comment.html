@@ -1,6 +1,6 @@
 <div class="comment" id="comment-{{comment.id}}" data-comment-id="{{comment.id}}">
     <div class="comment-author">
-        <a href="#">{{ comment.user.username }}</a>
+        <a href="/{{comment.user.id}}/{{comment.user.username}}">{{ comment.user.username }}</a>
     </div>
     <div class="comment-content">
         {% raw comment.content %}

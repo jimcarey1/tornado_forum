@@ -7,7 +7,7 @@
         {% block style %}
         {% end %}
     </head>
-    <body>
+    <body data-user-id="{{ current_user.id }}">
         <div class='main-page'>
             {% include 'components/navbar.html' %}
             {% block content %}

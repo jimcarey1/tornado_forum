@@ -1,0 +1,82 @@
+{% extends 'core/home.html' %}
+
+{% block title %}
+Profile of {{ profile_user.username }}
+{% end %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ profile_user.username }}</h1>
+
+    {% if not is_own_profile %}
+        <button id="chat-button" data-user-id="{{ profile_user.id }}">
+            Chat with {{ profile_user.username }}
+        </button>
+    {% end %}
+
+    <hr>
+
+    <div class="user-activity">
+        <div class="user-posts">
+            <h2>Posts</h2>
+            {% if topics %}
+                <ul>
+                    {% for topic in topics %}
+                        <li><a href="/topic/{{ topic.id }}">{{ topic.title }}</a></li>
+                    {% end for %}
+                </ul>
+            {% else %}
+                <p>{{ profile_user.username }} has not created any posts yet.</p>
+            {% end %}
+        </div>
+
+        <div class="user-comments">
+            <h2>Comments</h2>
+            {% if comments %}
+                <div>
+                    {% for comment in comments %}
+                        <p>{{comment.content}}</p>
+                    {% end %}
+                </div>
+            {% else %}
+                <p>{{ profile_user.username }} has not made any comments yet.</p>
+            {% end %}
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block javascript %}
+{% if not is_own_profile %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatButton = document.getElementById('chat-button');
+    chatButton.addEventListener('click', function() {
+        const userId = this.dataset.userId;
+        
+        fetch('/api/chat/dm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-XSRFToken': getCookie('_xsrf')
+            },
+            body: JSON.stringify({ user_id: userId })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Redirect to the main chat page
+                window.location.href = '/chat';
+            } else {
+                console.error('Failed to initiate chat.');
+                alert('Could not start the chat. Please try again later.');
+            }
+        });
+    });
+    function getCookie(name) {
+        var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+        return r ? r[1] : undefined;
+    }
+});
+</script>
+{% end %}
+{% end %}

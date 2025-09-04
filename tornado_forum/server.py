@@ -8,7 +8,9 @@ from handlers.core import HomeHandler
 from handlers.forum import CreateForumHandler, ViewForumHandler
 from handlers.post import CreateTopicHandler, ViewTopicHanlder, TopicVoteHandler
 from handlers.comment import CreateCommentHandler, CommentModule, CommentVoteHandler, CommentChildrenHandler
-from handlers.chat import MessageHandler, ChatHandler
+from handlers.chat import MessageHandler, ChatHandler, DirectMessageHandler, UserListHandler
+
+from utils.rabbitmq import init_amqp
 
 BASE_PATH = Path(__file__).parent
 
@@ -28,8 +30,10 @@ class MyApplication(tornado.web.Application):
             (r'/topic/(\d+)/vote', TopicVoteHandler),
             (r'/comment/(\d+)/vote', CommentVoteHandler),
             (r'/comment/(\d+)/children', CommentChildrenHandler),
-            (r'/user/(\d+)/(\w+)', UserProfileHandler),
+            (r'/(\d+)/(\w+)', UserProfileHandler),
             (r'/chat', ChatHandler),
+            (r'/api/chat/dm', DirectMessageHandler),
+            (r'/api/users', UserListHandler),
             (r'/ws', MessageHandler)
         ]
         settings = dict(
@@ -46,6 +50,8 @@ class MyApplication(tornado.web.Application):
 
 
 async def main():
+    
+    await init_amqp()
     async_engine = create_async_engine('sqlite+aiosqlite:///forum.sqlite')
 
     #we are using alembic to create and manage db migrations.

@@ -5,4 +5,4 @@ AMQP_URL = "amqp://guest:guest@localhost/"
 EXCHANGE_NAME = "chat.topic"
 WS_QUEUE_NAME = f"ws.{SERVER_ID}.queue"
 
-room_subscribers = set()
+room_subscribers = {}

@@ -13,11 +13,15 @@ _amqp_queue = None
 async def init_amqp():
     global _amqp_connection, _amqp_channel, _amqp_exchange, _amqp_queue
     _amqp_connection = await aio_pika.connect_robust(AMQP_URL)
+    print(f'The _amqp_connection value is {_amqp_connection}')
     _amqp_channel = await _amqp_connection.channel()
+    print(f'The _amqp_channel value is {_amqp_channel}')
     await _amqp_channel.set_qos(prefetch_count=50)
     _amqp_exchange = await _amqp_channel.declare_exchange(EXCHANGE_NAME, ExchangeType.TOPIC)
+    print(f'The _ampqp_exchange value is {_amqp_exchange}')
     # create server queue that will be bound dynamically to room.* and user.* as needed
     _amqp_queue = await _amqp_channel.declare_queue(WS_QUEUE_NAME, durable=False, auto_delete=True)
+    print(f'The _ampqp_queue value value is {_amqp_queue}')
     # start consuming
     await _amqp_queue.consume(on_amqp_message)
     print("AMQP initialized and consumer started")
@@ -45,6 +49,7 @@ async def on_amqp_message(amqp_msg: aio_pika.IncomingMessage):
     async with amqp_msg.process():  # ensures ack on exit if successful
         try:
             payload = json.loads(amqp_msg.body.decode())
+            print(payload)
         except Exception:
             return
         # Deliver to all connected WS handlers on this server who subscribed to the room
@@ -54,7 +59,9 @@ async def on_amqp_message(amqp_msg: aio_pika.IncomingMessage):
         subs = room_subscribers.get(int(room_id), set()).copy()
         for ws in subs:
             # schedule send on tornado IOLoop; write_message is coroutine, run on asyncio loop
-            await send_to_client(ws, {"type": "message", "message": payload})
+            # Ensure the type is 'chat' and send the payload directly as expected by client
+            payload['type'] = 'chat' # Ensure the type is 'chat' for client-side handling
+            await send_to_client(ws, payload)
 
 def list_all_server_ws():
     # room_subscribers holds sets; flatten to unique WS instances

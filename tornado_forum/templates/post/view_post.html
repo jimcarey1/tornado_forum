@@ -28,7 +28,9 @@
 {% block content %}
     <div class="topic-page" id="{{ topic['id'] }}">
         <div class="topic-details">
-            <p>{{topic['user']['username']}}</p>
+            <a href="/{{topic['user']['id']}}/{{topic['user']['username']}}">
+                <p>{{topic['user']['username']}}</p>
+            </a>
             <h2>{{ topic['title'] }}</h2>
             <p>{{ topic['content'] }}</p>
         </div>
