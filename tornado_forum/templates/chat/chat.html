@@ -37,4 +37,20 @@ Chat
 {% block javascript %}
 <script src="{{static_url('js/utils.js')}}"></script>
 <script src="{{ static_url('js/chat.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const roomId = "{{ room_id if room_id is not None else 'null' }}";
+    const roomName = "{{ room_name if room_name is not None else 'null' }}";
+
+    loadUsers();
+
+    if (roomId && roomId !== 'null') {
+        const chatHeader = document.getElementById('chat-header');
+        chatHeader.textContent = `Chat with ${roomName}`;
+
+        connectToWebSocket(roomId);
+        document.getElementById('message-form').style.display = 'flex';
+    }
+});
+</script>
 {% end %}

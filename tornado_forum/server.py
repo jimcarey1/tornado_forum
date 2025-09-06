@@ -32,6 +32,7 @@ class MyApplication(tornado.web.Application):
             (r'/comment/(\d+)/children', CommentChildrenHandler),
             (r'/(\d+)/(\w+)', UserProfileHandler),
             (r'/chat', ChatHandler),
+            (r'/chat/([a-zA-Z0-9_]+)', ChatHandler),
             (r'/api/chat/dm', DirectMessageHandler),
             (r'/api/users', UserListHandler),
             (r'/ws', MessageHandler)

@@ -12,8 +12,33 @@ from utils.rabbitmq import amqp_bind_room, send_to_client, list_all_server_ws, a
 from settings import room_subscribers
 
 class ChatHandler(BaseHandler):
-    def get(self):
-        return self.render('chat/chat.html')
+    @tornado.web.authenticated
+    async def get(self, room_name=None):
+        if room_name:
+            async with self.application.asession() as session:
+                stmt = select(Room).where(Room.name == room_name)
+                result = await session.execute(stmt)
+                room = result.scalar_one_or_none()
+
+                if not room:
+                    self.send_error(404, reason="Chat room not found.")
+                    return
+
+                # Verify the user is a member of the room
+                stmt = select(RoomMember).where(
+                    RoomMember.room_id == room.id,
+                    RoomMember.user_id == self.current_user.id
+                )
+                result = await session.execute(stmt)
+                member = result.scalar_one_or_none()
+
+                if not member:
+                    self.send_error(403, reason="You are not a member of this chat room.")
+                    return
+            
+            return self.render('chat/chat.html', room_id=room.id, room_name=room_name)
+        else:
+            return self.render('chat/chat.html', room_id='null', room_name='null')
 
 class UserListHandler(BaseHandler):
     @tornado.web.authenticated
@@ -31,7 +56,7 @@ class DirectMessageHandler(BaseHandler):
         """
         Initiates a direct message room with another user.
         Expects a JSON body with {'user_id': <other_user_id>}.
-        Returns {'room_id': <room_id>}.
+        Returns {'room_name': <room_name>}.
         """
         try:
             data = json.loads(self.request.body)
@@ -63,7 +88,7 @@ class DirectMessageHandler(BaseHandler):
             room = result.scalar_one_or_none()
 
             if room:
-                self.write({'room_id': room.id})
+                self.write({'room_name': room.name})
                 return
 
             # If not, create it
@@ -78,14 +103,14 @@ class DirectMessageHandler(BaseHandler):
                 session.add_all([member1, member2])
 
                 await session.commit()
-                self.write({'room_id': new_room.id})
+                self.write({'room_name': new_room.name})
             except IntegrityError:
                 await session.rollback()
                 # This could happen in a race condition. Re-query for the room.
                 stmt = select(Room).where(Room.name == room_name)
                 result = await session.execute(stmt)
                 room = result.scalar_one()
-                self.write({'room_id': room.id})
+                self.write({'room_name': room.name})
 
 
 class MessageHandler(tornado.websocket.WebSocketHandler):
