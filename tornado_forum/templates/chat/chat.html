@@ -10,11 +10,11 @@ Chat
 
 {% block content %}
 <div class="main-chat-content">
-  <!-- Chat Sidebar displays a list of users to chat with. -->
+  <!-- Chat Sidebar displays a list of previous conversation. -->
   <div class="chat-sidebar">
     <h3>Users</h3>
     <ul id="user-list">
-      <!-- User list will be populated by JavaScript -->
+      <!-- Chat rooms that the user has actively participated in will be displayed here. -->
     </ul>
   </div>
   
@@ -22,7 +22,7 @@ Chat
   <div class="chat-display">
     <div id="chat-header"></div>
     <div id="message-list">
-        <!-- Messages will be populated by JavaScript -->
+         <!-- We will only display the last 7 day messages. -->
     </div>
     <div id="chat-form-container">
       <form id="message-form" style="display: none;">

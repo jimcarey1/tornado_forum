@@ -41,6 +41,10 @@ class ChatHandler(BaseHandler):
             return self.render('chat/chat.html', room_id='null', room_name='null')
 
 class UserListHandler(BaseHandler):
+    """
+    I have no idea, why I have this function.
+    Stupid vibe coding mistake.(I do not want this.)
+    """
     @tornado.web.authenticated
     async def get(self):
         async with self.application.asession() as session:
@@ -51,6 +55,9 @@ class UserListHandler(BaseHandler):
             self.write({"users": user_list})
 
 class DirectMessageHandler(BaseHandler):
+    """
+    The DirectMessageHandler creates a chat room, if it is already not there.
+    """
     @tornado.web.authenticated
     async def post(self):
         """
