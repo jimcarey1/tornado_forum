@@ -11,10 +11,10 @@ const fetchPreviousConversation = ()=>{
         .then(data => {
             data.users.forEach(user => {
                 const li = document.createElement('li');
-                li.textContent = user.username;
-                li.dataset.userId = user.id;
-                li.dataset.username = user.username;
-                li.addEventListener('click', () => startChat(user.id, user.username));
+                li.textContent = user[2];
+                li.dataset.userId = user[0];
+                li.dataset.username = user[2];
+                li.addEventListener('click', () => startChat(user[1], user[2]));
                 userList.appendChild(li);
             });
         });

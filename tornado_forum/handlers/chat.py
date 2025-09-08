@@ -52,11 +52,20 @@ class UserListHandler(BaseHandler):
     @tornado.web.authenticated
     async def get(self, user_id):
         async with self.application.asession() as session:
-            stmt = select(Room).join(RoomMember).where(RoomMember.user_id==int(user_id))
+            stmt = (
+                select(Room.id, User.id, User.username)
+                .join(RoomMember, Room.id == RoomMember.room_id)
+                .join(User, User.id == RoomMember.user_id)
+                .where(Room.id.in_(
+                    select(RoomMember.room_id).where(RoomMember.user_id == user_id)
+                ))
+                .where(User.id != user_id)
+            )
             result = await session.execute(stmt)
-            user = result.scalars().all()
+            users = result.all()
+        users = [tuple(user) for user in users]
         self.set_header('Content-Type', 'application/json')
-        self.write({'users':user})
+        self.write({'users':users})
 
 class DirectMessageHandler(BaseHandler):
     """
