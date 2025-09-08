@@ -6,7 +6,7 @@ from models.user import User
 
 class BaseHandler(RequestHandler):
     async def prepare(self):
-        user_id = self.get_signed_cookie("app_cookie")
+        user_id = self.get_signed_cookie("app_cookie")       
         if user_id and (not self.current_user):
             user_id = tornado.escape.to_unicode(user_id)
             async with self.application.asession() as sess:

@@ -34,7 +34,7 @@ class MyApplication(tornado.web.Application):
             (r'/chat', ChatHandler),
             (r'/chat/([a-zA-Z0-9_]+)', ChatHandler),
             (r'/api/chat/dm', DirectMessageHandler),
-            (r'/api/users', UserListHandler),
+            (r'/api/users/(\d+)', UserListHandler),
             (r'/ws', MessageHandler)
         ]
         settings = dict(
@@ -68,4 +68,4 @@ async def main():
     await shutdown_event.wait()
     
 if __name__ == '__main__':
-    asyncio.run(main(), debug=True)
+    asyncio.run(main())

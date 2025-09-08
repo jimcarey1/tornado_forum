@@ -28,6 +28,9 @@ class RoomMember(Base):
     user:Mapped['User'] = relationship('User', back_populates='joined_rooms')
     room:Mapped['Room'] = relationship('Room', back_populates='members')
 
+    def __repr__(self):
+        return f'RoomMember(user_id={self.user_id}, room_id={self.room_id})'
+
 
 
 class Message(Base):

@@ -4,6 +4,7 @@ import os
 from typing import Dict
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from .base import BaseHandler
 from models.chat import Message, Room, RoomMember
@@ -35,24 +36,27 @@ class ChatHandler(BaseHandler):
                 if not member:
                     self.send_error(403, reason="You are not a member of this chat room.")
                     return
-            
             return self.render('chat/chat.html', room_id=room.id, room_name=room_name)
         else:
             return self.render('chat/chat.html', room_id='null', room_name='null')
 
 class UserListHandler(BaseHandler):
     """
-    I have no idea, why I have this function.
-    Stupid vibe coding mistake.(I do not want this.)
+    I changed this handler, so that now the rooms that user participated
+    will be fetched, instead of all users.
+
+    Todo: 
+    1. Right now, I am only fetching rooms
+    2. I need to display corresponding usernames for direct messages and room names for group chats.
     """
     @tornado.web.authenticated
-    async def get(self):
+    async def get(self, user_id):
         async with self.application.asession() as session:
-            stmt = select(User).order_by(User.username)
+            stmt = select(Room).join(RoomMember).where(RoomMember.user_id==int(user_id))
             result = await session.execute(stmt)
-            users = result.scalars().all()
-            user_list = [{"id": user.id, "username": user.username} for user in users if user.id != self.current_user.id]
-            self.write({"users": user_list})
+            user = result.scalars().all()
+        self.set_header('Content-Type', 'application/json')
+        self.write({'users':user})
 
 class DirectMessageHandler(BaseHandler):
     """

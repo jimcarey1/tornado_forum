@@ -2,9 +2,11 @@ let socket;
 let currentRoomId;
 let currentRecipient = '';
 
-function loadUsers() {
-    const userList = document.getElementById('user-list');
-    fetch('/api/users')
+const fetchPreviousConversation = ()=>{
+    const userList = document.getElementById('user-list')
+    const currentUserID = document.querySelector('.main-chat-content').dataset.userId;
+    console.log(currentUserID)
+    fetch(`/api/users/${currentUserID}`)
         .then(response => response.json())
         .then(data => {
             data.users.forEach(user => {
@@ -19,6 +21,7 @@ function loadUsers() {
 }
 
 function startChat(userId, username) {
+    console.log(`The value of _xsrf cookie is ${getCookie('csrftoken')}`)
     fetch('/api/chat/dm', {
         method: 'POST',
         headers: {
