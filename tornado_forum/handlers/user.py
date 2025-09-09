@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy import select, insert, or_
 from sqlalchemy.orm import selectinload
 import tornado
@@ -7,6 +8,7 @@ import bcrypt
 from .base import BaseHandler
 from models.user import User
 from models.post import Topic, Comment
+from models.vote import VoteTopic, VoteType
 
 
 class UserRegisterHandler(BaseHandler):
@@ -107,3 +109,51 @@ class UserProfileHandler(BaseHandler):
             comments=user.comments,
             is_own_profile=is_own_profile
         )
+
+class FetchUserPostsHandler(BaseHandler):
+    async def get(self, user_id):
+        stmt = select(Topic.id, Topic.title).where(Topic.user_id == int(user_id))
+        async with self.application.asession() as session:
+            results = await session.execute(stmt)
+            topics = results.mappings().all()
+        topics = [dict(topic) for topic in topics]
+        self.set_header('Content-Type', 'application/json')
+        self.write({'topics':topics})
+
+class FetchUserCommentsHandler(BaseHandler):
+    async def get(self, user_id:int):
+        stmt = select(Comment).where(Comment.user_id == int(user_id))
+        async with self.application.asession() as session:
+            results = await session.execute(stmt)
+            comments = results.scalars().all()
+        comments = [{'id':comment.id, 'content':comment.content} for comment in comments]
+        self.set_header('Content-Type', 'application/json')
+        self.write({'comments': comments})
+
+class FetchUserUpVotedPosts(BaseHandler):
+    async def get(self, user_id:int):
+        stmt = select(Topic)\
+                .join(VoteTopic, VoteTopic.topic_id == Topic.id)\
+                .where(VoteTopic.user_id == int(user_id))\
+                .where(VoteTopic.vote_type == VoteType.UPVOTE)
+        
+        async with self.application.asession() as session:
+            results = await session.execute(stmt)
+            upvoted_topics = results.scalars().all()
+        upvoted_topics = [{'id':topic.id, 'title':topic.title} for topic in upvoted_topics]
+        self.set_header('Content-Type', 'application/json')
+        self.write({'upvotedTopics': upvoted_topics})
+
+class FetchUserDownVotedPosts(BaseHandler):
+    async def get(self, user_id:int):
+        stmt = select(Topic)\
+                .join(VoteTopic, VoteTopic.topic_id == Topic.id)\
+                .where(VoteTopic.user_id == int(user_id))\
+                .where(VoteTopic.vote_type == VoteType.DOWNVOTE)
+        
+        async with self.application.asession() as session:
+            results = await session.execute(stmt)
+            downvoted_topics = results.scalars().all()
+        downvoted_topics = [{'id':topic.id, 'title':topic.title} for topic in downvoted_topics]
+        self.set_header('Content-Type', 'application/json')
+        self.write({'downvotedTopics': downvoted_topics})

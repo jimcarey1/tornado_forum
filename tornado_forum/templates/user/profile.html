@@ -1,52 +1,54 @@
 {% extends 'core/home.html' %}
 
 {% block title %}
-Profile of {{ profile_user.username }}
+{{ profile_user.username }}
+{% end %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ static_url('css/profile.css') }}">
 {% end %}
 
 {% block content %}
-<div class="container">
+<div class="profile-container" data-profile-id="{{profile_user.id}}">
     <h1>{{ profile_user.username }}</h1>
-
     {% if not is_own_profile %}
         <button id="chat-button" data-user-id="{{ profile_user.id }}">
             Chat with {{ profile_user.username }}
         </button>
     {% end %}
-
     <hr>
-
     <div class="user-activity">
         <div class="user-posts">
             <h2>Posts</h2>
-            {% if topics %}
-                <ul>
-                    {% for topic in topics %}
-                        <li><a href="/topic/{{ topic.id }}">{{ topic.title }}</a></li>
-                    {% end for %}
-                </ul>
-            {% else %}
-                <p>{{ profile_user.username }} has not created any posts yet.</p>
-            {% end %}
         </div>
-
         <div class="user-comments">
             <h2>Comments</h2>
-            {% if comments %}
-                <div>
-                    {% for comment in comments %}
-                        <p>{{comment.content}}</p>
-                    {% end %}
-                </div>
-            {% else %}
-                <p>{{ profile_user.username }} has not made any comments yet.</p>
-            {% end %}
         </div>
+        <div class="liked-posts">
+            <h2>Liked Posts</h2>
+        </div>
+        <div class="disliked-posts">
+            <h2>Disliked Posts</h2>
+        </div>
+    </div>
+    <div class="user-activity-content">
+        <!-- Rendered by javascript based on the user selection -->
+        <!-- If the user wants to see the posts, he will click on posts. -->
+        {% if topics %}
+            {% for topic in topics %}
+                <div id="topic-{{topic.id}}" class="topic-list">
+                    <a href="/topic/{{topic.id}}">{{topic.title}}</a>
+                </div>
+            {% end %}
+        {% else %}
+            <p>{{ profile_user.username }} has not created any posts yet.</p>
+        {% end %}
     </div>
 </div>
 {% end %}
 
 {% block javascript %}
+<script src="{{ static_url('js/profileHandler.js') }}"></script>
 {% if not is_own_profile %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -72,10 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    function getCookie(name) {
-        var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
-        return r ? r[1] : undefined;
-    }
 });
 </script>
 {% end %}

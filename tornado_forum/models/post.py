@@ -20,8 +20,8 @@ class Topic(Base):
     user = relationship('User', back_populates='topics')
 
     comments = relationship('Comment', back_populates='topic')
-    root_comments = relationship('Comment', primaryjoin="and_(Topic.id==Comment.topic_id, Comment.parent_id==None)",\
-                                back_populates=None, viewonly=True, lazy='selectin')
+    # root_comments = relationship('Comment', primaryjoin="and_(Topic.id==Comment.topic_id, Comment.parent_id==None)",\
+    #                             back_populates=None, viewonly=True, lazy='selectin')
     votes = relationship('VoteTopic', back_populates='topic')
     score: Mapped[int] = mapped_column(Integer, default=0)
 
