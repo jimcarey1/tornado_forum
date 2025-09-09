@@ -8,7 +8,12 @@
         {% end %}
     </head>
     <body>
-        <div class='main-page'>
+        {% if not current_user %}
+            {% set user_id = 0 %}
+        {% else %}
+            {% set user_id = current_user.id %}
+        {% end %}
+        <div class='main-page' data-user-id="{{user_id}}">
             {% include 'components/navbar.html' %}
             {% block content %}
             <div class="forum-index">

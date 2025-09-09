@@ -1,14 +1,19 @@
 //Only managing one CKEditor instance for all replies.
 let ckEditorInstance = null
+//This is to find out, if the user is authenticated or not, If he is not userId should be equal to zero.
+const userId = document.querySelector('.main-page').dataset.userId;
 const url = document.getElementById('thread-reply').dataset.url
 
+//This block of code creates a CKEditor instance for creating the comment(parent comment for the topic.).
+//Only works if the user is authenticated.
 const replyButton = document.querySelector(".topic-meta .fa-reply")
 const createCKEditorInstance = async (event)=>{
     const replyButton = event.target
     const topicReplyContainer = document.querySelector('#thread-reply')
 
     const isHidden = topicReplyContainer.style.display === 'none'
-    topicReplyContainer.style.display = isHidden ? 'block' : 'none'
+    const isUserAuthenticated = (userId !== '0');
+    topicReplyContainer.style.display = (isUserAuthenticated && isHidden) ? 'block' : 'none'
 
     if (isHidden && !ckEditorInstance) {
         try {
@@ -23,6 +28,9 @@ const createCKEditorInstance = async (event)=>{
 }
 replyButton.onclick = createCKEditorInstance;
 
+//This block of code actually creates the comment.
+//It sends a POST request to the backend and saves the comment to the database and 
+//then asynchronously updates the newly added comment to the comment section without browser refresh.
 const createTopicReplyButton = document.querySelector("#thread-reply .handle-comment .reply-comment")
 const createParentComment = async (event)=>{
     console.log(createTopicReplyButton)
@@ -76,15 +84,19 @@ const createParentComment = async (event)=>{
 }
 createTopicReplyButton.onclick = createParentComment
 
+//This block of code creates a CKEditor instance for any of the comment(instance for creating nested comment.)
+//We get all commentReplyButtons using querySelectorAll and use forEach on them to attach the callback function
+//createCKEditorInstanceForCommentReply for every button.
 const commentReplyButtons = document.querySelectorAll(".comment-action .comment-reply-btn .fa-reply")
 const createCKEditorInstanceForCommentReply = async (event) =>{
     const commentReplyButton = event.target
     const commentId = commentReplyButton.dataset.commentId;
     const commentReplyContainer = document.getElementById(`comment-reply-${commentId}`)
     const isHidden = commentReplyContainer.style.display === 'none'
-    commentReplyContainer.style.display = isHidden ? 'block' : 'none'
+    const isUserAuthenticated = (userId != '0')
+    commentReplyContainer.style.display = (isUserAuthenticated && isHidden) ? 'block' : 'none'
     ckEditorInstance = null
-    if (isHidden){
+    if (isUserAuthenticated && isHidden){
         const editorElement = document.getElementById(`editor-${commentId}`)
         try{
             if(editorElement){
@@ -101,7 +113,8 @@ commentReplyButtons.forEach((button)=>{
     button.addEventListener('click', createCKEditorInstanceForCommentReply)
 })
 
-
+//This block of code actually creates the comment.
+//similar to createParentComment, but It adds(parent_comment to the comment attribute.)
 const createChildrenCommentButtons = document.querySelectorAll('.comment-reply .handle-comment .reply-comment')
 const createChildrenComment = async(event)=>{
     const commentId = event.target.dataset.commentId
@@ -132,4 +145,32 @@ const createChildrenComment = async(event)=>{
 }
 createChildrenCommentButtons.forEach((button)=>{
     button.addEventListener('click', createChildrenComment)
+})
+
+//This block of code destroys CKEditor instance when the user clicks on the cancel button.
+const cancelCommentButton = document.querySelector('#thread-reply .cancel-comment')
+const handleCancelCommentButton = ()=>{
+    const topicReplyContainer = document.querySelector('#thread-reply')
+    topicReplyContainer.style.display = 'none'
+    const editorElement = document.getElementById('editor')
+    const ckEditorElement = editorElement.nextElementSibling
+    ckEditorElement.remove()
+    ckEditorInstance = null
+}
+cancelCommentButton.onclick = handleCancelCommentButton
+
+//Does the same job as cancelCommentButton for every nested comment cancel buttons.
+const nestedCancelCommentButton = document.querySelectorAll('.comment-reply .handle-comment .cancel-comment')
+const handleNestedCancelCommentButton = async (event)=>{
+    const commentButton = event.target
+    const commentId = commentButton.dataset.commentId;
+    const commentReplyContainer = document.getElementById(`comment-reply-${commentId}`)
+    commentReplyContainer.style.display = 'none'
+    const editorElement = document.querySelector(`#editor-${commentId}`)
+    const ckEditorElement = editorElement.nextElementSibling
+    ckEditorElement.remove()
+    ckEditorInstance = null
+}
+nestedCancelCommentButton.forEach((button)=>{
+    button.addEventListener('click', handleNestedCancelCommentButton)
 })
