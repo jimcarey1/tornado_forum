@@ -5,7 +5,6 @@ let currentRecipient = '';
 const fetchPreviousConversation = ()=>{
     const userList = document.getElementById('user-list')
     const currentUserID = document.querySelector('.main-chat-content').dataset.userId;
-    console.log(currentUserID)
     fetch(`/api/users/${currentUserID}`)
         .then(response => response.json())
         .then(data => {
@@ -21,7 +20,6 @@ const fetchPreviousConversation = ()=>{
 }
 
 function startChat(userId, username) {
-    console.log(`The value of _xsrf cookie is ${getCookie('csrftoken')}`)
     fetch('/api/chat/dm', {
         method: 'POST',
         headers: {
@@ -87,12 +85,6 @@ function appendMessage(senderId, data, timestamp) {
     messageList.appendChild(msgDiv);
     messageList.scrollTop = messageList.scrollHeight;
 }
-
-function getCookie(name) {
-    let r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
-    return r ? r[1] : undefined;
-}
-
 
 document.addEventListener('DOMContentLoaded', function() {
     const messageForm = document.getElementById('message-form');

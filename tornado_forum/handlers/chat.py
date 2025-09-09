@@ -61,6 +61,7 @@ class UserListHandler(BaseHandler):
                 ))
                 .where(User.id != user_id)
             )
+            print(stmt.compile(compile_kwargs={'literal_binds':True}))
             result = await session.execute(stmt)
             users = result.all()
         users = [tuple(user) for user in users]

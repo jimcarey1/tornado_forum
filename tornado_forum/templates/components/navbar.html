@@ -4,13 +4,13 @@
     </div>
     <div class='auth-related'>
         {% if not current_user %}
-            <button>Login</button>
+            <a href="/auth/login"><button>Login</button></a>
+            <a href="/auth/register"><button>Register</button></a>
             <button>Register</button>
         {% else %}
-            <button>Chat</button>
-            <button>Notification</button>
-            <button>Logout</button>
-            <button>Profile</button>
+            <a href="/chat"><button>Chat</button></a>
+            <a href="/auth/logout"><button>Logout</button></a>
+            <a href="/{{current_user.id}}/{{current_user.username}}"><button>Profile</button></a>
         {% end %}
     </div>
 </div>
