@@ -19,19 +19,19 @@
     <hr>
     <div class="user-activity">
         <div class="user-posts">
-            <h2>Posts</h2>
+            <button class="post-display-button">Posts</button>
         </div>
         <div class="user-comments">
-            <h2>Comments</h2>
+            <button class="comment-display-button">Comments</button>
         </div>
         <div class="liked-posts">
-            <h2>Liked Posts</h2>
+            <button class="likes-display-button">Liked Posts</button>
         </div>
         <div class="disliked-posts">
-            <h2>Disliked Posts</h2>
+            <button class="dislikes-display-button">Disliked Posts</button>
         </div>
     </div>
-    <div class="user-activity-content">
+    <div class="user-activity-content" data-current-content="postsgh">
         <!-- Rendered by javascript based on the user selection -->
         <!-- If the user wants to see the posts, he will click on posts. -->
         {% if topics %}
