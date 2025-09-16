@@ -64,4 +64,26 @@
     <script src="{{ static_url('js/handleVote.js') }}"></script>
     <script src="{{ static_url('js/createComment.js') }}"></script>
     <script src="{{ static_url('js/handleComments.js') }}"></script>
+    <script defer>
+        const arrangeCommentsInRedditStyle = ()=>{
+            const allComments = document.querySelectorAll('.comment');
+            allComments.forEach((comment)=>{
+                configureCommentStyling(comment)
+            })
+        }
+
+        const configureCommentStyling = (commentElement)=>{
+            /*
+            We are getting the parent element of the commentElement.
+            We check if the parentElement has the commentDepth data, if not we will set it to 1.
+            (If there is no commentDepth data, then it is the parent comment.)
+            We set the margin-left of the comment to 40*commentDepth px.
+            */
+            const parentElement = commentElement.parentElement
+            const commentDepth = parentElement.dataset.commentDepth || 1
+            console.log(`${4*commentDepth}rem`)
+            commentElement.style.marginLeft = `${40*commentDepth}px`
+        }
+        arrangeCommentsInRedditStyle()
+    </script>
 {% end %}
