@@ -6,6 +6,11 @@
         {% raw comment.content %}
     </div>
     <div class="comment-action">
+        {% if hasattr(comment, 'children_in_tree') %}
+        <div class="toggle-comment-visibility" data-comment-id="{{comment.id}}">
+            <button class="toggle-comment-button" data-showing="1"><i class="bi bi-dash-circle"></i></button>
+        </div>
+        {% end %}
         <div class="comment-vote-btn">
             <i class="fa-solid fa-arrow-up vote-btn" data-vote-type="1" data-comment-id="{{ comment.id }}"></i>
             <span class="score">{{ comment.score }}</span>
