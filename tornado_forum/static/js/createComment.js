@@ -159,6 +159,7 @@ const handleCancelCommentButton = ()=>{
 }
 cancelCommentButton.onclick = handleCancelCommentButton
 
+
 //Does the same job as cancelCommentButton for every nested comment cancel buttons.
 const nestedCancelCommentButton = document.querySelectorAll('.comment-reply .handle-comment .cancel-comment')
 const handleNestedCancelCommentButton = async (event)=>{
@@ -176,16 +177,19 @@ nestedCancelCommentButton.forEach((button)=>{
 })
 
 
+/* 
+This block of code toggles the comment visibility, we have a plus or minus icon that toggles the visibility.
+*/
 const commentToggleButtons = document.querySelectorAll('.toggle-comment-button')
 const handleToggleCommentButton = (event)=>{
     const buttonElement = event.currentTarget;
-    buttonElement.innerHTML = `<i class="bi bi-plus-circle"></i>`
     const toggleDivElement = buttonElement.closest('.toggle-comment-visibility')
-    toggleDivElement.dataset.visibilityStatus = 'hidden'
+    toggleDivElement.dataset.visibilityStatus = (toggleDivElement.dataset.visibilityStatus == 'hidden') ? 'visible' : 'hidden'
+    buttonElement.innerHTML = (toggleDivElement.dataset.visibilityStatus == 'hidden') ? `<i class="bi bi-plus-circle"></i>` : `<i class="bi bi-dash-circle"></i>`
     const commentId = toggleDivElement.dataset.commentId
     const commentElement = document.getElementById(`comment-${commentId}`)
     const nestedCommentsElement = commentElement.nextElementSibling
-    nestedCommentsElement.style.display='none'
+    nestedCommentsElement.style.display = (nestedCommentsElement.style.display == 'none') ? 'block' : 'none'
 }
 
 commentToggleButtons.forEach((toggleButton)=>{
