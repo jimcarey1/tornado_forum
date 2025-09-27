@@ -175,15 +175,16 @@ nestedCancelCommentButton.forEach((button)=>{
     button.addEventListener('click', handleNestedCancelCommentButton)
 })
 
+
 const commentToggleButtons = document.querySelectorAll('.toggle-comment-button')
 const handleToggleCommentButton = (event)=>{
-    const buttonElement = event.target;
+    const buttonElement = event.currentTarget;
+    buttonElement.innerHTML = `<i class="bi bi-plus-circle"></i>`
     const toggleDivElement = buttonElement.closest('.toggle-comment-visibility')
-    console.log(toggleDivElement)
+    toggleDivElement.dataset.visibilityStatus = 'hidden'
     const commentId = toggleDivElement.dataset.commentId
     const commentElement = document.getElementById(`comment-${commentId}`)
     const nestedCommentsElement = commentElement.nextElementSibling
-    commentElement.style.display = 'none'
     nestedCommentsElement.style.display='none'
 }
 

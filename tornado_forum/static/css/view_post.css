@@ -21,6 +21,7 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
+    color: black;
 }
 
 #thread-reply .handle-comment{
@@ -59,4 +60,9 @@
 .comment-action{
     display: flex;
     gap: 18px;
+}
+
+.comment-author{
+    display: flex;
+    gap: 10px;
 }
