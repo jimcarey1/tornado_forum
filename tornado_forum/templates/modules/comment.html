@@ -19,6 +19,11 @@
         <div class="comment-reply-btn">
             <i class="fa-solid fa-reply" data-comment-id="{{ comment.id }}"></i>
         </div>
+        {% if current_user.is_staff %}
+            <div class="comment-delete-btn">
+                <i class="bi bi-trash" data-comment-id="{{ comment.id }}"></i>
+            </div>
+        {% end %}
     </div>
     <div class="comment-reply" id="comment-reply-{{comment.id}}" style="display:none">
         <div id="editor-{{comment.id}}">

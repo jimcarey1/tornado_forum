@@ -46,7 +46,19 @@ class CreateCommentHandler(BaseHandler):
 class DeleteCommentHandler(BaseHandler):
     @tornado.web.authenticated
     async def post(self, comment_id):
-        pass
+        async with self.application.asession() as sess:
+            stmt = select(Comment).where(Comment.id == comment_id)
+            result = await sess.execute(stmt)
+            comment = result.scalar_one_or_none()
+            if(comment):
+                comment.content = 'deleted'
+                await sess.commit()
+            if(comment):
+                self.set_status(200)
+                self.write({'status':200, 'message':'comment successfully deleted'})
+            else:
+                self.set_status(404)
+                self.write({'status':404, 'message':'comment not found'})
 
 class CommentVoteHandler(BaseHandler):
     @tornado.web.authenticated

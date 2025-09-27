@@ -52,6 +52,7 @@
     max-width: 70%;
     background-color: #f1f0f0;
     align-self: flex-start;
+    color: black;
 }
 
 /* A real app would differentiate between sent and received messages */

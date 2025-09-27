@@ -8,7 +8,7 @@ from handlers.user import UserLoginHandler, UserRegisterHandler, UserLogoutHandl
 from handlers.core import HomeHandler
 from handlers.forum import CreateForumHandler, ViewForumHandler
 from handlers.post import CreateTopicHandler, ViewTopicHanlder, TopicVoteHandler
-from handlers.comment import CreateCommentHandler, CommentModule, CommentVoteHandler, CommentChildrenHandler
+from handlers.comment import CreateCommentHandler, CommentModule, CommentVoteHandler, CommentChildrenHandler, DeleteCommentHandler
 from handlers.chat import MessageHandler, ChatHandler, DirectMessageHandler, UserListHandler
 
 from utils.rabbitmq import init_amqp
@@ -25,6 +25,7 @@ class MyApplication(tornado.web.Application):
             (r'/auth/logout', UserLogoutHandler),
             (r'/api/topics/(\d+)', FetchUserPostsHandler),
             (r'/api/comments/(\d+)', FetchUserCommentsHandler),
+            (r'/api/comments/delete/(\d+)', DeleteCommentHandler),
             (r'/api/upvoted_topics/(\d+)', FetchUserUpVotedPosts),
             (r'/api/downvoted_topics/(\d+)', FetchUserDownVotedPosts),
             (r'/forum/create', CreateForumHandler),

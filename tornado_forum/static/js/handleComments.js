@@ -76,3 +76,28 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 });
+
+const deleteButtons = document.querySelectorAll('.comment-delete-btn')
+const handleDeleteComment = async (event)=>{
+    const deleteButton = event.target;
+    const commentId = deleteButton.dataset.commentId;
+    const commentElement = document.getElementById(`comment-${commentId}`)
+    const response = await fetch(`/api/comments/delete/${commentId}`, {
+        method: 'POST',
+        headers:{
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('_xsrf'),
+        }
+    })
+    if(response.ok){
+        const message = await response.json()
+        console.log('message deleted successfully')
+        const commentContentElement = commentElement.querySelector('.comment-content')
+        commentContentElement.innerHTML = `<p>deleted</p>`
+    }else{
+        console.log('Error deleting message')
+    }
+}
+deleteButtons.forEach((button)=>{
+    button.addEventListener('click', handleDeleteComment)
+})
