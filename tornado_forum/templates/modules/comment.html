@@ -26,15 +26,21 @@
             <span class="score">{{ comment.score }}</span>
             <i class="fa-solid fa-arrow-down vote-btn" data-vote-type="-1" data-comment-id="{{ comment.id }}"></i>
         </div>
+        <!--We do not show the reply button, if the comment is deleted.-->
+        {% if not comment.is_deleted %}
         <div class="comment-reply-btn">
             <i class="fa-solid fa-reply" data-comment-id="{{ comment.id }}"></i>
         </div>
+        {% end %}
+        <!--We only show the delete button, if it is admin or the owner and the comment is deleted-->
         {% if (current_user.is_staff or current_user.id == comment.user_id) and (not comment.is_deleted) %}
             <div class="comment-delete-btn">
                 <i class="bi bi-trash" data-comment-id="{{ comment.id }}"></i>
             </div>
         {% end %}
     </div>
+    <!--We do not render ckeditor if the comment is deleted.-->
+    {% if not comment.is_deleted %}
     <div class="comment-reply" id="comment-reply-{{comment.id}}" style="display:none">
         <div id="editor-{{comment.id}}">
         </div>
@@ -43,6 +49,7 @@
             <button value="Cancel" class="cancel-comment" data-comment-id="{{comment.id}}" type="button">Cancel</button>
         </div>
     </div>
+    {% end %}
 </div>
 {% if hasattr(comment, 'children_in_tree') %}
     <div class="nested-comment" data-parent-id="{{comment.id}}" data-comment-depth="{{comment.depth+1}}">

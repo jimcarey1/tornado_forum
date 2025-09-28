@@ -14,16 +14,20 @@ const createCKEditorInstance = async (event)=>{
     const isHidden = topicReplyContainer.style.display === 'none'
     const isUserAuthenticated = (userId !== '0');
     topicReplyContainer.style.display = (isUserAuthenticated && isHidden) ? 'block' : 'none'
-
+    const editorElement = topicReplyContainer.querySelector('#editor')
+    //If the ckEditorInstance is not created, we will create it.
     if (isHidden && !ckEditorInstance) {
         try {
-            const editorElement = topicReplyContainer.querySelector('#editor')
             if (editorElement) {
                 ckEditorInstance = await ClassicEditor.create(editorElement)
             }
         } catch (error) {
             console.error('Error creating top-level editor:', error);
         }
+    }else{
+        //If the ckEditorInstance is created, we will destroy it and remove the html.
+        ckEditorInstance = null;
+        editorElement.nextElementSibling.remove()
     }
 }
 replyButton.onclick = createCKEditorInstance;
