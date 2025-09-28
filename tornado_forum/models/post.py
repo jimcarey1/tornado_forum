@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, ForeignKey, Integer, Text, DateTime, and_
+from sqlalchemy import String, ForeignKey, Integer, Text, DateTime, Boolean
 from sqlalchemy.sql import func
 
 from models.base import Base
@@ -13,6 +13,7 @@ class Topic(Base):
     content = mapped_column(Text)
     created_on = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_on = mapped_column(DateTime(timezone=True), onupdate=func.now())
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     forum_id: Mapped[int] = mapped_column(ForeignKey('forums.id'))
     user_id: Mapped[int] = mapped_column(ForeignKey('accounts.id'))
 
@@ -36,6 +37,7 @@ class Comment(Base):
     content = mapped_column(Text)
     created_on = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_on = mapped_column(DateTime(timezone=True), onupdate=func.now())
+    is_deleted:Mapped[bool] = mapped_column(Boolean, default=False)
     parent_id = mapped_column(ForeignKey('comments.id'), nullable=True)
     children = relationship('Comment', back_populates='parent')
     parent = relationship('Comment', back_populates='children', remote_side=[id])
