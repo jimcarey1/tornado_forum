@@ -93,7 +93,9 @@ const handleDeleteComment = async (event)=>{
         const message = await response.json()
         console.log('message deleted successfully')
         const commentContentElement = commentElement.querySelector('.comment-content')
-        commentContentElement.innerHTML = `<p>deleted</p>`
+        const commentAuthorElement = commentElement.querySelector('.conditional-comment-author-display')
+        commentAuthorElement.innerHTML = `<p>deleted</p>`
+        commentContentElement.innerHTML = `<div class="deleted-comment"><p>This comment is deleted<p></div>`
     }else{
         console.log('Error deleting message')
     }

@@ -50,10 +50,10 @@ class DeleteCommentHandler(BaseHandler):
             stmt = select(Comment).where(Comment.id == comment_id)
             result = await sess.execute(stmt)
             comment = result.scalar_one_or_none()
-            if(comment):
-                comment.content = 'deleted'
+            if comment:
+                comment.is_deleted = True
                 await sess.commit()
-            if(comment):
+            if comment:
                 self.set_status(200)
                 self.write({'status':200, 'message':'comment successfully deleted'})
             else:
