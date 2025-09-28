@@ -2,6 +2,7 @@ import tornado
 import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from pathlib import Path
+from tornado.web import url
 
 from handlers.user import UserLoginHandler, UserRegisterHandler, UserLogoutHandler, UserProfileHandler\
 , FetchUserPostsHandler, FetchUserCommentsHandler, FetchUserUpVotedPosts, FetchUserDownVotedPosts
@@ -10,8 +11,10 @@ from handlers.forum import CreateForumHandler, ViewForumHandler
 from handlers.post import CreateTopicHandler, ViewTopicHanlder, TopicVoteHandler
 from handlers.comment import CreateCommentHandler, CommentModule, CommentVoteHandler, CommentChildrenHandler, DeleteCommentHandler
 from handlers.chat import MessageHandler, ChatHandler, DirectMessageHandler, UserListHandler
+from handlers.oauth import GoogleOAuth2LoginHandler
 
 from utils.rabbitmq import init_amqp
+from settings import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 
 BASE_PATH = Path(__file__).parent
 
@@ -21,6 +24,7 @@ class MyApplication(tornado.web.Application):
         handlers = [
             (r'/', HomeHandler),
             (r'/auth/login', UserLoginHandler),
+            url(r'/accounts/google/login/callback', GoogleOAuth2LoginHandler, name='google_oauth'),
             (r'/auth/register', UserRegisterHandler),
             (r'/auth/logout', UserLogoutHandler),
             (r'/api/topics/(\d+)', FetchUserPostsHandler),
@@ -52,6 +56,8 @@ class MyApplication(tornado.web.Application):
             template_path = f'{BASE_PATH}/templates',
             static_path = f'{BASE_PATH}/static',
             login_url = '/auth/login',
+            redirect_base_uri = 'http://localhost:8888',
+            google_oauth = dict(key=GOOGLE_CLIENT_ID, secret=GOOGLE_CLIENT_SECRET)
         )
         super().__init__(handlers, **settings)
 
