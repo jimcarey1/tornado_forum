@@ -1,4 +1,4 @@
-from sqlalchemy import String, Boolean, DateTime
+from sqlalchemy import String, Boolean, DateTime, Text
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy.sql import func
 from typing import List, Optional
@@ -14,6 +14,11 @@ class User(Base):
     password: Mapped[str] = mapped_column(String)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     is_staff: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    google_oauth: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
+    access_token = mapped_column(Text, nullable=True)
+    email_verified: Mapped[bool] = mapped_column(Boolean, nullable=True)
+
 
     topics = relationship('Topic', back_populates='user')
     comments = relationship('Comment', back_populates='user')

@@ -5,3 +5,5 @@ db.py
 documentation
 
 .env
+
+*.sqlite
