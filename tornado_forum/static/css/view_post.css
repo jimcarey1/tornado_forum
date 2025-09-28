@@ -66,3 +66,8 @@
     display: flex;
     gap: 10px;
 }
+
+.deleted-comment{
+    color: red;
+    font: italic;
+}

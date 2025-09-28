@@ -5,10 +5,20 @@
             <button class="toggle-comment-button"><i class="bi bi-dash-circle"></i></button>
         </div>
         {% end %}
-        <a href="/{{comment.user.id}}/{{comment.user.username}}">{{ comment.user.username }}</a>
+        {% if comment.is_deleted %}
+            <p>deleted</p>
+        {% else %}
+            <a href="/{{comment.user.id}}/{{comment.user.username}}">{{ comment.user.username }}</a>
+        {% end %}
     </div>
     <div class="comment-content">
-        {% raw comment.content %}
+        {% if comment.is_deleted %}
+        <div class="deleted-comment">
+            <p>This comment is deleted.</p>
+        </div>
+        {% else %}
+            {% raw comment.content %}
+        {% end %}
     </div>
     <div class="comment-action">
         <div class="comment-vote-btn">
@@ -19,7 +29,7 @@
         <div class="comment-reply-btn">
             <i class="fa-solid fa-reply" data-comment-id="{{ comment.id }}"></i>
         </div>
-        {% if current_user.is_staff %}
+        {% if (current_user.is_staff or current_user.id == comment.user_id) and (not comment.is_deleted) %}
             <div class="comment-delete-btn">
                 <i class="bi bi-trash" data-comment-id="{{ comment.id }}"></i>
             </div>
