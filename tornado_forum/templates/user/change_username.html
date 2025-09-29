@@ -1,1 +1,18 @@
 //whenever user is registered with google oauth, he should change his username.
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Change Username</title>
+    </head>
+    <body>
+        <h1>Change Username</h1>
+        <form method="post">
+            <input type="hidden" name="userid" value="{{current_user.id}}">
+            <input type="text" name="change-username" placeholder="Set Username" autocomplete="off" required>
+            <input type="text" name="confirm-change-username" placeholder="Confirm Username" autocomplete="off" required>
+            <button type="button">Submit</button>
+        </form>
+        <div class="display-error">
+        </div>
+    </body>
+</html>

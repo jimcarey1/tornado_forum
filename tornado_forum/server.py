@@ -11,7 +11,7 @@ from handlers.forum import CreateForumHandler, ViewForumHandler
 from handlers.post import CreateTopicHandler, ViewTopicHanlder, TopicVoteHandler
 from handlers.comment import CreateCommentHandler, CommentModule, CommentVoteHandler, CommentChildrenHandler, DeleteCommentHandler
 from handlers.chat import MessageHandler, ChatHandler, DirectMessageHandler, UserListHandler
-from handlers.oauth import GoogleOAuth2LoginHandler
+from handlers.oauth import GoogleOAuth2LoginHandler, ChangeUsernameHandler
 
 from utils.rabbitmq import init_amqp
 from settings import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
@@ -27,6 +27,7 @@ class MyApplication(tornado.web.Application):
             url(r'/accounts/google/login/callback', GoogleOAuth2LoginHandler, name='google_oauth'),
             (r'/auth/register', UserRegisterHandler),
             (r'/auth/logout', UserLogoutHandler),
+            (r'/change/username/(\d+)', ChangeUsernameHandler),
             (r'/api/topics/(\d+)', FetchUserPostsHandler),
             (r'/api/comments/(\d+)', FetchUserCommentsHandler),
             (r'/api/comments/delete/(\d+)', DeleteCommentHandler),

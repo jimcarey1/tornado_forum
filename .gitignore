@@ -6,4 +6,4 @@ documentation
 
 .env
 
-*.sqlite
+forum.sqlite
