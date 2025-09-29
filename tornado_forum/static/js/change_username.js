@@ -1,4 +1,5 @@
 const buttonElement = document.querySelector("button[type='button']")
+console.log(buttonElement)
 const handleChangeUsername = async (event)=>{
     event.preventDefault()
     const username = document.querySelector("input[name='change-username']").value 
@@ -10,10 +11,10 @@ const handleChangeUsername = async (event)=>{
             'Content-Type': 'application/json',
             'X-CSRFToken' : getCookie('_xsrf'),
         },
-        body: JSON.stringify({'username': username, 'confirm_username': confirmUsername})
+        body: JSON.stringify({"username": username, "confirm_username": confirmUsername})
     })
-    if(response.ok){
-        window.location.href = '/'
+    if(response.status == 200){
+        window.location.replace('/')
     }else{
         const message = await response.json()
         const displayErrorElement = document.querySelector('.display-error')
@@ -24,3 +25,4 @@ const handleChangeUsername = async (event)=>{
         }
     }
 }
+buttonElement.onclick = handleChangeUsername

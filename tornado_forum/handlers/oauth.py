@@ -1,8 +1,10 @@
 #This entire code snippet copied from the (https://www.tornadoweb.org/en/stable/auth.html)
 import tornado
 import urllib
+import json
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
+
 
 from .base import BaseHandler
 from models.user import User
@@ -48,14 +50,25 @@ class GoogleOAuth2LoginHandler(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
             )
 
 class ChangeUsernameHandler(BaseHandler):
-    async def get(self):
-        self.render('user/change_username.html')
+    @tornado.web.authenticated
+    async def get(self, user_id:int):
+        async with self.application.asession() as sess:
+            stmt = select(User).where(User.id == user_id)
+            results = await sess.execute(stmt)
+            user = results.scalar_one_or_none()
+
+        if user and user.google_oauth == True:
+            self.render('user/change_username.html')
+            return
+        self.redirect('/')
 
     @tornado.web.authenticated
     async def post(self, user_id:int):
-        username = self.get_argument('change-username', '').strip()
-        confirm_username = self.get_argument('confirm-change-username', '').strip()
+        body = json.loads(self.request.body)
+        username = body.get('username', '').strip()
+        confirm_username = body.get('confirm_username', '').strip()
         if(username and confirm_username and username==confirm_username):
+            self.set_header('Content-Type', 'application/json')
             async with self.application.asession() as sess:
                 #Checking if the username is already taken or not.
                 stmt = select(User.id).where(User.username == username)
