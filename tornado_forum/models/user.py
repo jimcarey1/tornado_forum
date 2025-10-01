@@ -18,6 +18,7 @@ class User(Base):
     google_oauth: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
     access_token = mapped_column(Text, nullable=True)
     email_verified: Mapped[bool] = mapped_column(Boolean, nullable=True)
+    can_change_username: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
 
 
     topics = relationship('Topic', back_populates='user')
