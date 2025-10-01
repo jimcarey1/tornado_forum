@@ -38,7 +38,14 @@ class UserRegisterHandler(BaseHandler):
                 bcrypt.gensalt()
             )
             async with self.application.asession() as asess:
-                user = User(username=username, email=email, password=tornado.escape.to_unicode(hashed_password))
+                user = User(
+                    username=username, 
+                    email=email, 
+                    password=tornado.escape.to_unicode(hashed_password),
+                    can_change_username = False,
+                    email_verified = False,
+                    google_oauth = False
+                )
                 asess.add(user)
                 await asess.commit()
                 self.set_signed_cookie("app_cookie", str(user.id))

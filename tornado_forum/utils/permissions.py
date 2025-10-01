@@ -8,7 +8,15 @@ def is_admin(
     @functools.wraps(method)
     def wrapper(self:RequestHandler, *args, **kwargs):
         if not self.current_user.is_admin:
-            raise HTTPError(403)
+            raise HTTPError(403, 'Forbidden')
+        return method(self, *args, **kwargs)
+    return wrapper
+
+def can_change_username(method: Callable[..., Optional[Awaitable[None]]]) -> Callable[..., Optional[Awaitable[None]]]:
+    @functools.wraps(method)
+    def wrapper(self:RequestHandler, *args, **kwargs):
+        if not self.current_user.can_change_username:
+            raise HTTPError(403, 'Forbidden')
         return method(self, *args, **kwargs)
     return wrapper
 
@@ -20,3 +28,4 @@ def is_owner_or_admin(
         #do something here
         return method(self, *args, **kwargs)
     return wrapper
+

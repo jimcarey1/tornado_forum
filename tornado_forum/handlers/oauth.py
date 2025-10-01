@@ -9,6 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from .base import BaseHandler
 from models.user import User
 from utils.generate_random_strings import generate_random_string
+from utils.permissions import can_change_username
 
 class GoogleOAuth2LoginHandler(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
     async def get(self):
@@ -33,7 +34,15 @@ class GoogleOAuth2LoginHandler(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
                 results = await sess.execute(stmt)
                 user = results.scalar_one_or_none()
                 if not user:
-                    user = User(username=username, email=email, password=password, email_verified=True, google_oauth=True, access_token=access['access_token'])
+                    user = User(
+                        username=username, 
+                        email=email, 
+                        password=password, 
+                        email_verified=True, 
+                        google_oauth=True, 
+                        access_token=access['access_token'],
+                        can_change_username=True
+                    )
                     sess.add(user)
                     await sess.commit()
             # Save the user and access token.
@@ -51,6 +60,7 @@ class GoogleOAuth2LoginHandler(BaseHandler, tornado.auth.GoogleOAuth2Mixin):
 
 class ChangeUsernameHandler(BaseHandler):
     @tornado.web.authenticated
+    @can_change_username
     async def get(self, user_id:int):
         async with self.application.asession() as sess:
             stmt = select(User).where(User.id == user_id)
@@ -63,6 +73,7 @@ class ChangeUsernameHandler(BaseHandler):
         self.redirect('/')
 
     @tornado.web.authenticated
+    @can_change_username
     async def post(self, user_id:int):
         body = json.loads(self.request.body)
         username = body.get('username', '').strip()
