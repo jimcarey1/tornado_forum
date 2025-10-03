@@ -1,14 +1,16 @@
-from typing import List
 from sqlalchemy import select, insert, or_
 from sqlalchemy.orm import selectinload
 import tornado
+from tornado import ioloop
 import bcrypt
+import json
 
 
 from .base import BaseHandler
 from models.user import User
 from models.post import Topic, Comment
 from models.vote import VoteTopic, VoteType
+from utils.email_verification import confirm_verification_token, generate_verification_token, send_verification_email
 
 
 class UserRegisterHandler(BaseHandler):
@@ -31,7 +33,7 @@ class UserRegisterHandler(BaseHandler):
             self.render('user/register.html')
         else:
             #Create user and auto login.
-            hashed_password = await tornado.ioloop.IOLoop.current().run_in_executor(
+            hashed_password = await ioloop.IOLoop.current().run_in_executor(
                 None,
                 bcrypt.hashpw,
                 tornado.escape.utf8(password),
@@ -49,6 +51,9 @@ class UserRegisterHandler(BaseHandler):
                 asess.add(user)
                 await asess.commit()
                 self.set_signed_cookie("app_cookie", str(user.id))
+                token = await ioloop.IOLoop.current().run_in_executor(None, generate_verification_token, email)
+                verification_link = f'http://localhost:8888/verify?token={token}'
+                await send_verification_email(email, verification_link)
                 self.redirect('/')
 
 class UserLoginHandler(BaseHandler):
@@ -164,3 +169,44 @@ class FetchUserDownVotedPosts(BaseHandler):
         downvoted_topics = [{'id':topic.id, 'title':topic.title} for topic in downvoted_topics]
         self.set_header('Content-Type', 'application/json')
         self.write({'downvotedTopics': downvoted_topics})
+
+class SendVerificationMail(BaseHandler):
+    async def post(self):
+        data = json.loads(self.request.body)
+        user_id = data.get('user_id', 0)
+        self.set_header('Content-Type', 'application/json')
+        async with self.application.asession() as sess:
+            stmt = select(User).where(User.id == user_id)
+            results = await sess.execute(stmt)
+            user:User = results.scalar_one_or_none()
+        if user:
+            token = await ioloop.IOLoop.current().run_in_executor(None, generate_verification_token, user.email)
+            verification_link = f'http://localhost:8888/verify?token={token}'
+            email_sent = await send_verification_email(user.email, verification_link)
+            if email_sent:
+                self.set_status(200)
+                self.write({'status':'ok', 'message':'Verification Email Successfully Sent'})
+            else:
+                self.set_status(500)
+                self.write({'status':'error', 'message':'There is an error in sending the Verification email, please try after some time.'})
+
+
+class EmailVerificationHandler(BaseHandler):
+    async def get(self):
+        token = self.get_query_argument('token', '', strip=True)
+        if token:
+            confirmation = await ioloop.IOLoop.current().run_in_executor(None, confirm_verification_token, token)
+            if confirmation is not None:
+                async with self.application.asession() as sess:
+                    stmt = select(User).where(User.email == confirmation)
+                    results = await sess.execute(stmt)
+                    user = results.scalar_one_or_none()
+
+                    if user:
+                        user.email_verified = True
+                        await sess.flush()
+                        await sess.commit()
+                    else:
+                        print('User not found')
+        if token and user:
+            self.redirect('/')

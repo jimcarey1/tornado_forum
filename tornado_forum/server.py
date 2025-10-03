@@ -5,7 +5,9 @@ from pathlib import Path
 from tornado.web import url
 
 from handlers.user import UserLoginHandler, UserRegisterHandler, UserLogoutHandler, UserProfileHandler\
-, FetchUserPostsHandler, FetchUserCommentsHandler, FetchUserUpVotedPosts, FetchUserDownVotedPosts
+, FetchUserPostsHandler, FetchUserCommentsHandler, FetchUserUpVotedPosts, FetchUserDownVotedPosts,\
+EmailVerificationHandler, SendVerificationMail
+
 from handlers.core import HomeHandler
 from handlers.forum import CreateForumHandler, ViewForumHandler
 from handlers.post import CreateTopicHandler, ViewTopicHanlder, TopicVoteHandler
@@ -33,6 +35,8 @@ class MyApplication(tornado.web.Application):
             (r'/api/comments/delete/(\d+)', DeleteCommentHandler),
             (r'/api/upvoted_topics/(\d+)', FetchUserUpVotedPosts),
             (r'/api/downvoted_topics/(\d+)', FetchUserDownVotedPosts),
+            (r'/verify', EmailVerificationHandler),
+            (r'/send-verification-email', SendVerificationMail),
             (r'/forum/create', CreateForumHandler),
             (r'/forum/(\d+)', ViewForumHandler),
             (r'/topic/create/(\d+)', CreateTopicHandler),

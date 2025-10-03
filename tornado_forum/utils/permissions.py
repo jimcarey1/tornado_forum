@@ -29,3 +29,10 @@ def is_owner_or_admin(
         return method(self, *args, **kwargs)
     return wrapper
 
+def is_email_verified(method: Callable[..., Optional[Awaitable[None]]]) -> Callable[..., Optional[Awaitable[None]]]:
+    @functools.wraps(method)
+    def wrapper(self:RequestHandler, *args, **kwargs):
+        if not self.current_user.email_verified:
+            self.redirect('/')
+        return method(self, *args, **kwargs)
+    return wrapper
